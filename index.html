@@ -155,6 +155,7 @@ ${linea('ENCENDIDO', encendido)}`;
 }
 
 const formato = `
+\`\`\`
 ${linea('B', b)}
 ${linea('F', f)}
 ${linea('H', h)}
@@ -162,7 +163,7 @@ ${linea('TEC', t)}
 ${linea('O', o)}
 ${linea('TT', tt)}
 ${linea('UP', up)}
-${linea('P', p + (p === 'Si' && pd ? ' (' + pd + ')' : ''))}
+${linea('P', p)}
 ${linea('A', a)}
 ${linea('PT', pt)}
 ${linea('RP', rp)}
@@ -172,8 +173,9 @@ ${linea('IGN', ign)}
 ${linea('IC', ic)}
 ${linea('CO', co)}
 ${linea('M', m)}
-${comandoTopfly}
+\`\`\`
 `.trim();
+
 
 
 
@@ -230,5 +232,6 @@ ${comandoTopfly}
 </body>
 
 </html>
+
 
 
