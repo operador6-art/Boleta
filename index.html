@@ -154,25 +154,26 @@ ${linea('APAGADO', apagado)}
 ${linea('ENCENDIDO', encendido)}`;
 }
 
-const formato =
-linea('B', b) + '\n' +
-linea('F', f) + '\n' +
-linea('H', h) + '\n' +
-linea('TEC', t) + '\n' +
-linea('O', o) + '\n' +
-linea('TT', tt) + '\n' +
-linea('UP', up) + '\n' +
-linea('P', p + (p === 'Si' && pd ? ' (' + pd + ')' : '')) + '\n' +
-linea('A', a) + '\n' +
-linea('PT', pt) + '\n' +
-linea('RP', rp) + '\n' +
-linea('UG', ug) + '\n' +
-linea('DP', dp) + '\n' +
-linea('IGN', ign) + '\n' +
-linea('IC', ic) + '\n' +
-linea('CO', co) + '\n' +
-linea('M', m);
-${comandoTopfly}`;
+const formato = `
+${linea('B', b)}
+${linea('F', f)}
+${linea('H', h)}
+${linea('TEC', t)}
+${linea('O', o)}
+${linea('TT', tt)}
+${linea('UP', up)}
+${linea('P', p + (p === 'Si' && pd ? ' (' + pd + ')' : '')))}
+${linea('A', a)}
+${linea('PT', pt)}
+${linea('RP', rp)}
+${linea('UG', ug)}
+${linea('DP', dp)}
+${linea('IGN', ign)}
+${linea('IC', ic)}
+${linea('CO', co)}
+${linea('M', m)}
+${comandoTopfly}`.trim();
+
 
 
 
@@ -233,6 +234,7 @@ ${comandoTopfly}`;
 </body>
 
 </html>
+
 
 
 
