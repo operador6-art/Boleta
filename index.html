@@ -1,216 +1,159 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Generador de Boletas</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📋</text></svg>">
-
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
-        .container { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
-        h2 { color: #1a73e8; text-align: center; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        label { display: block; margin-top: 10px; font-weight: bold; font-size: 0.85em; color: #555; }
-        input, select { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; background-color: #fff; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .grid-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        button { width: 100%; padding: 12px; margin-top: 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1em; transition: 0.3s; }
-        .btn-generate { background: #1a73e8; color: white; }
-        .btn-generate:hover { background: #1557b0; }
-        .btn-copy { background: #34a853; color: white; display: none; margin-top: 10px; }
-        #resultado { margin-top: 20px; padding: 15px; background: #fdfdfd; border: 1px solid #ddd; white-space: pre-wrap; font-family: 'Courier New', Courier, monospace; font-size: 14px; display: none; border-left: 5px solid #1a73e8; }
-    </style>
+<meta charset="UTF-8">
+<title>Generador de Boletas</title>
+<style>
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
+.container { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
+h2 { color: #1a73e8; text-align: center; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+label { display: block; margin-top: 10px; font-weight: bold; font-size: 0.85em; color: #555; }
+input, select { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; background-color: #fff; }
+button { width: 100%; padding: 12px; margin-top: 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1em; transition: 0.3s; }
+.btn-generate { background: #1a73e8; color: white; }
+.btn-generate:hover { background: #1557b0; }
+.btn-copy { background: #34a853; color: white; display: none; margin-top: 10px; }
+#resultado { margin-top: 20px; padding: 15px; background: #fdfdfd; border: 1px solid #ddd; white-space: pre; font-family: 'Courier New', monospace; font-size: 14px; display: none; border-left: 5px solid #1a73e8; }
+</style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Boleta</h2>
-    
-    <label>B (Número de Boleta):</label>
-    <input type="number" id="numBoleta">
+<h2>Boleta</h2>
+<label>B (Número de Boleta):</label>
+<input type="number" id="numBoleta">
 
-    <label>T (Técnico):</label>
-    <input list="tecnicos" id="tecnico" placeholder="Seleccione o escriba el nombre...">
-    <datalist id="tecnicos">
-        <option value="Alejandro J.">
-        <option value="Edwin O.">
-        <option value="Franklin R.">
-        <option value="Javier J.">
-        <option value="Jorge M.">
-        <option value="Manuel G.">
-        <option value="Samuel S.">
-        <option value="Sebastian A.">
-    </datalist>
+<label>T (Técnico):</label>
+<input type="text" id="tecnico">
 
-    <label>O (Operador):</label>
-    <input list="operadores" id="operador" placeholder="Seleccione o escriba el operador...">
-    <datalist id="operadores">
-        <option value="Daniel H.">
-        <option value="Oscar R.">
-        <option value="Josué R.">
-        <option value="Carlos N.">
-        <option value="Eduardo C.">
-    </datalist>
+<label>O (Operador):</label>
+<input type="text" id="operador">
 
-    <label>T (Tipo de Trabajo):</label>
-    <input type="text" id="tipoTrabajo" value="Nueva instalacion">
+<label>T (Tipo de Trabajo):</label>
+<input type="text" id="tipoTrabajo" value="Nueva instalacion">
 
-    <label>UP (Ubicación GPS):</label>
-    <input type="text" id="ubicacion" value="Atras del tacometro">
+<label>UP (Ubicación GPS):</label>
+<input type="text" id="ubicacion" value="Atras del tacometro">
 
-    <div class="grid">
-        <div>
-            <label>P (Pánico):</label>
-            <select id="panico" onchange="togglePanicoDonde()">
-                <option>No</option>
-                <option>Si</option>
-            </select>
-        </div>
-        <div>
-            <div id="panicoDondeContainer" style="display:none;">
-                <label>P - ¿Dónde?:</label>
-                <input type="text" id="panicoDonde" placeholder="Indique dónde esta el pánico">
-            </div>
-            <label>A (Apagado):</label>
-            <select id="apagado"><option>No</option><option>Si. Normal 12V</option></select>
-        </div>
-    </div>
+<label>P (Pánico):</label>
+<select id="panico">
+<option>No</option>
+<option>Si</option>
+</select>
 
-    <label>PT (Plataforma):</label>
-    <select id="pt">
-        <option value="CXPSFLEET">CXPSFLEET</option>
-        <option value="COMPASSXPS">COMPASSXPS</option>
-    </select>
+<label>A (Apagado):</label>
+<select id="apagado">
+<option>No</option>
+<option>Si. Normal 12V</option>
+</select>
 
-    <div class="grid-small">
-        <div><label>RP:</label><select id="rp"><option>Si</option><option>No</option></select></div>
-        <div><label>UG:</label><select id="ug"><option>Si</option><option>No</option></select></div>
-        <div><label>DP:</label><select id="dp"><option>Si</option><option>No</option></select></div>
-        <div><label>IGN:</label><select id="ign"><option>Si</option><option>No</option></select></div>
-        <div><label>IC:</label><select id="ic"><option>Si</option><option>No</option></select></div>
-        <div><label>CO:</label><select id="co"><option>Si</option><option>No</option></select></div>
-        <div><label>M:</label><select id="m"><option>No</option><option>Si</option></select></div>
-    </div>
+<label>PT (Plataforma):</label>
+<select id="pt">
+<option value="CXPSFLEET">CXPSFLEET</option>
+<option value="COMPASSXPS">COMPASSXPS</option>
+</select>
 
-    <label>Topfly?</label>
-    <select id="topfly" onchange="toggleTopfly()">
-        <option>No</option>
-        <option>Si</option>
-    </select>
+<label>RP:</label>
+<select id="rp"><option>Si</option><option>No</option></select>
+<label>UG:</label>
+<select id="ug"><option>Si</option><option>No</option></select>
+<label>DP:</label>
+<select id="dp"><option>Si</option><option>No</option></select>
+<label>IGN:</label>
+<select id="ign"><option>Si</option><option>No</option></select>
+<label>IC:</label>
+<select id="ic"><option>Si</option><option>No</option></select>
+<label>CO:</label>
+<select id="co"><option>Si</option><option>No</option></select>
+<label>M:</label>
+<select id="m"><option>No</option><option>Si</option></select>
 
-    <div id="topflyContainer" style="display:none;">
-        <label>IDRelay:</label>
-        <input type="text" id="idrelay" placeholder="Pegue el IDRelay">
-    </div>
+<label>Topfly?</label>
+<select id="topfly">
+<option>No</option>
+<option>Si</option>
+</select>
 
-    <button class="btn-generate" onclick="generar()">GENERAR TEXTO</button>
-    
-    <div id="resultado"></div>
-    <button id="btnCopy" class="btn-copy" onclick="copiar()">📋 COPIAR AL PORTAPAPELES</button>
+<label>IDRelay:</label>
+<input type="text" id="idrelay" placeholder="Pegue el IDRelay">
+
+<button class="btn-generate" onclick="generar()">GENERAR TEXTO</button>
+<div id="resultado"></div>
+<button id="btnCopy" class="btn-copy" onclick="copiar()">📋 COPIAR AL PORTAPAPELES</button>
 </div>
 
 <script>
-    function linea(clave, valor) {
-        return clave + '\t: ' + valor;
+function pad(clave, valor) {
+    return clave.padEnd(6, ' ') + ': ' + valor;
+}
+
+function generar() {
+    const ahora = new Date();
+    const opcionesFecha = { weekday:'long', year:'numeric', month:'long', day:'numeric'};
+    const b = document.getElementById('numBoleta').value;
+    const f = ahora.toLocaleDateString('es-ES', opcionesFecha);
+    const h = ahora.toLocaleTimeString('es-ES');
+    const t = document.getElementById('tecnico').value;
+    const o = document.getElementById('operador').value;
+    const tt = document.getElementById('tipoTrabajo').value;
+    const up = document.getElementById('ubicacion').value;
+    const p = document.getElementById('panico').value;
+    const a = document.getElementById('apagado').value;
+    const pt = document.getElementById('pt').value;
+    const rp = document.getElementById('rp').value;
+    const ug = document.getElementById('ug').value;
+    const dp = document.getElementById('dp').value;
+    const ign = document.getElementById('ign').value;
+    const ic = document.getElementById('ic').value;
+    const co = document.getElementById('co').value;
+    const m = document.getElementById('m').value;
+    const topfly = document.getElementById('topfly').value;
+    const idrelay = document.getElementById('idrelay').value;
+
+    let comandoTopfly = '';
+    if(topfly === 'Si' && idrelay){
+        const apagado = `1234,${idrelay},0000,123.456.78.9,8027 1#`;
+        const encendido = `1234,${idrelay},0000,123.456.78.9,8027 0#`;
+        comandoTopfly = '\n' + pad('TOPFLY', idrelay) + '\n' + pad('APAGADO', apagado) + '\n' + pad('ENCENDIDO', encendido);
     }
 
-    function generar() {
-        const ahora = new Date();
-        const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        
-        const b = document.getElementById('numBoleta').value;
-        const f = ahora.toLocaleDateString('es-ES', opcionesFecha);
-        const h = ahora.toLocaleTimeString('es-ES');
-        const t = document.getElementById('tecnico').value;
-        const o = document.getElementById('operador').value;
-        const tt = document.getElementById('tipoTrabajo').value;
-        const up = document.getElementById('ubicacion').value;
-        const p = document.getElementById('panico').value;
-        const pd = document.getElementById('panicoDonde').value;
-        const a = document.getElementById('apagado').value;
-        const pt = document.getElementById('pt').value;
-        const rp = document.getElementById('rp').value;
-        const ug = document.getElementById('ug').value;
-        const dp = document.getElementById('dp').value;
-        const ign = document.getElementById('ign').value;
-        const ic = document.getElementById('ic').value;
-        const co = document.getElementById('co').value;
-        const m = document.getElementById('m').value;
-        const topfly = document.getElementById('topfly').value;
-        const idrelay = document.getElementById('idrelay').value;
+    const texto = 
+        pad('B', b) + '\n' +
+        pad('F', f) + '\n' +
+        pad('H', h) + '\n' +
+        pad('TEC', t) + '\n' +
+        pad('O', o) + '\n' +
+        pad('TT', tt) + '\n' +
+        pad('UP', up) + '\n' +
+        pad('P', p) + '\n' +
+        pad('A', a) + '\n' +
+        pad('PT', pt) + '\n' +
+        pad('RP', rp) + '\n' +
+        pad('UG', ug) + '\n' +
+        pad('DP', dp) + '\n' +
+        pad('IGN', ign) + '\n' +
+        pad('IC', ic) + '\n' +
+        pad('CO', co) + '\n' +
+        pad('M', m) +
+        comandoTopfly;
 
-        let comandoTopfly = '';
-        if (topfly === 'Si' && idrelay) {
-            const apagado = `1234,${idrelay},0000,123.456.78.9,8027 1#`;
-            const encendido = `1234,${idrelay},0000,123.456.78.9,8027 0#`;
-            comandoTopfly = `
-${linea('TOPFLY', idrelay)}
-${linea('APAGADO', apagado)}
-${linea('ENCENDIDO', encendido)}`;
-        }
+    const resDiv = document.getElementById('resultado');
+    resDiv.innerText = texto;
+    resDiv.style.display = 'block';
+    document.getElementById('btnCopy').style.display = 'block';
+}
 
-        const formato = `
-${linea('B', b)}
-${linea('F', f)}
-${linea('H', h)}
-${linea('TEC', t)}
-${linea('O', o)}
-${linea('TT', tt)}
-${linea('UP', up)}
-${linea('P', p + (p === 'Si' && pd ? ' (' + pd + ')' : '')))}
-${linea('A', a)}
-${linea('PT', pt)}
-${linea('RP', rp)}
-${linea('UG', ug)}
-${linea('DP', dp)}
-${linea('IGN', ign)}
-${linea('IC', ic)}
-${linea('CO', co)}
-${linea('M', m)}
-${comandoTopfly}`.trim();
-
-        const resDiv = document.getElementById('resultado');
-        resDiv.innerText = formato;
-        resDiv.style.display = 'block';
-        document.getElementById('btnCopy').style.display = 'block';
-    }
-
-    function toggleTopfly() {
-        const topfly = document.getElementById('topfly').value;
-        const cont = document.getElementById('topflyContainer');
-        if (topfly === 'Si') {
-            cont.style.display = 'block';
-        } else {
-            cont.style.display = 'none';
-            document.getElementById('idrelay').value = '';
-        }
-    }
-
-    function togglePanicoDonde() {
-        const panico = document.getElementById('panico').value;
-        const contenedor = document.getElementById('panicoDondeContainer');
-        if (panico === 'Si') {
-            contenedor.style.display = 'block';
-        } else {
-            contenedor.style.display = 'none';
-            document.getElementById('panicoDonde').value = '';
-        }
-    }
-
-    function copiar() {
-        const texto = document.getElementById('resultado').innerText;
-        navigator.clipboard.writeText(texto).then(() => {
-            const btn = document.getElementById('btnCopy');
-            btn.innerText = "¡COPIADO!";
-            setTimeout(() => {
-                btn.innerText = "📋 COPIAR AL PORTAPAPELES";
-            }, 1500);
-        });
-    }
+function copiar() {
+    const texto = document.getElementById('resultado').innerText;
+    navigator.clipboard.writeText(texto).then(() => {
+        const btn = document.getElementById('btnCopy');
+        btn.innerText = "¡COPIADO!";
+        setTimeout(()=>{ btn.innerText="📋 COPIAR AL PORTAPAPELES"; },1500);
+    });
+}
 </script>
-
 </body>
 </html>
-
 
 
 
