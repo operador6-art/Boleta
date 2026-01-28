@@ -155,24 +155,27 @@ ENCENDIDO: ${encendido}`;
 }
 
 
-        const formato = `B: ${b}
-F: ${f}
-H: ${h}
-T: ${t}
-O: ${o}
-T: ${tt}
-UP: ${up}
-P: ${p}${p === 'Si' && pd ? ' (' + pd + ')' : ''}
-A: ${a}
-PT: ${pt}
-RP: ${rp}
-UG: ${ug}
-DP: ${dp}
-IGN: ${ign}
-IC: ${ic}
-CO: ${co}
-M: ${m}
-${comandoTopfly}`;
+       const formato = `
+${linea('B', b)}
+${linea('F', f)}
+${linea('H', h)}
+${linea('T', t)}
+${linea('O', o)}
+${linea('TT', tt)}
+${linea('UP', up)}
+${linea('P', p + (p === 'Si' && pd ? ' (' + pd + ')' : ''))}
+${linea('A', a)}
+${linea('PT', pt)}
+${linea('RP', rp)}
+${linea('UG', ug)}
+${linea('DP', dp)}
+${linea('IGN', ign)}
+${linea('IC', ic)}
+${linea('CO', co)}
+${linea('M', m)}
+${comandoTopfly ? '\n' + comandoTopfly : ''}
+`.trim();
+
 
 
 
@@ -193,6 +196,11 @@ ${comandoTopfly}`;
         document.getElementById('idrelay').value = '';
     }
 }
+
+    function linea(clave, valor, ancho = 4) {
+    return clave.padEnd(ancho, ' ') + ': ' + valor;
+}
+
 
 
     function copiar() {
@@ -223,3 +231,4 @@ ${comandoTopfly}`;
 </body>
 
 </html>
+
