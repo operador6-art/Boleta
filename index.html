@@ -149,17 +149,16 @@ if (topfly === 'Si' && idrelay) {
     const encendido = `1234,${idrelay},0000,123.456.78.9,8027 0#`;
 
     comandoTopfly = `
-TOPFLY: ${idrelay}
-APAGADO: ${apagado}
-ENCENDIDO: ${encendido}`;
+${linea('TOPFLY', idrelay)}
+${linea('APAGADO', apagado)}
+${linea('ENCENDIDO', encendido)}`;
 }
 
-
-       const formato = `
+const formato = `
 ${linea('B', b)}
 ${linea('F', f)}
 ${linea('H', h)}
-${linea('T', t)}
+${linea('TEC', t)}
 ${linea('O', o)}
 ${linea('TT', tt)}
 ${linea('UP', up)}
@@ -173,7 +172,7 @@ ${linea('IGN', ign)}
 ${linea('IC', ic)}
 ${linea('CO', co)}
 ${linea('M', m)}
-${comandoTopfly ? '\n' + comandoTopfly : ''}
+${comandoTopfly}
 `.trim();
 
 
@@ -197,7 +196,7 @@ ${comandoTopfly ? '\n' + comandoTopfly : ''}
     }
 }
 
-    function linea(clave, valor, ancho = 4) {
+    function linea(clave, valor, ancho = 6) {
     return clave.padEnd(ancho, ' ') + ': ' + valor;
 }
 
@@ -231,4 +230,5 @@ ${comandoTopfly ? '\n' + comandoTopfly : ''}
 </body>
 
 </html>
+
 
