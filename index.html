@@ -41,17 +41,15 @@
         <option value="Sebastian A.">
     </datalist>
 
-   <label>O (Operador):</label>
-<input list="operadores" id="operador" placeholder="Seleccione o escriba el operador...">
-
-<datalist id="operadores">
-    <option value="Daniel H.">
-    <option value="Oscar R.">
-    <option value="Josué R.">
-    <option value="Carlos N.">
-    <option value="Eduardo C.">
-</datalist>
-
+    <label>O (Operador):</label>
+    <input list="operadores" id="operador" placeholder="Seleccione o escriba el operador...">
+    <datalist id="operadores">
+        <option value="Daniel H.">
+        <option value="Oscar R.">
+        <option value="Josué R.">
+        <option value="Carlos N.">
+        <option value="Eduardo C.">
+    </datalist>
 
     <label>T (Tipo de Trabajo):</label>
     <input type="text" id="tipoTrabajo" value="Nueva instalacion">
@@ -63,18 +61,15 @@
         <div>
             <label>P (Pánico):</label>
             <select id="panico" onchange="togglePanicoDonde()">
-    <option>No</option>
-    <option>Si</option>
-</select>
+                <option>No</option>
+                <option>Si</option>
+            </select>
         </div>
         <div>
-
-<div id="panicoDondeContainer" style="display:none;">
-    <label>P - ¿Dónde?:</label>
-    <input type="text" id="panicoDonde" placeholder="Indique dónde esta el pánico">
-</div>
-
-
+            <div id="panicoDondeContainer" style="display:none;">
+                <label>P - ¿Dónde?:</label>
+                <input type="text" id="panicoDonde" placeholder="Indique dónde esta el pánico">
+            </div>
             <label>A (Apagado):</label>
             <select id="apagado"><option>No</option><option>Si. Normal 12V</option></select>
         </div>
@@ -96,18 +91,16 @@
         <div><label>M:</label><select id="m"><option>No</option><option>Si</option></select></div>
     </div>
 
-<label>Topfly?</label>
-<select id="topfly" onchange="toggleTopfly()">
-    <option>No</option>
-    <option>Si</option>
-</select>
+    <label>Topfly?</label>
+    <select id="topfly" onchange="toggleTopfly()">
+        <option>No</option>
+        <option>Si</option>
+    </select>
 
-<div id="topflyContainer" style="display:none;">
-    <label>IDRelay:</label>
-    <input type="text" id="idrelay" placeholder="Pegue el IDRelay">
-</div>
-
-
+    <div id="topflyContainer" style="display:none;">
+        <label>IDRelay:</label>
+        <input type="text" id="idrelay" placeholder="Pegue el IDRelay">
+    </div>
 
     <button class="btn-generate" onclick="generar()">GENERAR TEXTO</button>
     
@@ -116,6 +109,10 @@
 </div>
 
 <script>
+    function linea(clave, valor) {
+        return clave + '\t: ' + valor;
+    }
+
     function generar() {
         const ahora = new Date();
         const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -141,20 +138,17 @@
         const topfly = document.getElementById('topfly').value;
         const idrelay = document.getElementById('idrelay').value;
 
-
-let comandoTopfly = '';
-
-if (topfly === 'Si' && idrelay) {
-    const apagado = `1234,${idrelay},0000,123.456.78.9,8027 1#`;
-    const encendido = `1234,${idrelay},0000,123.456.78.9,8027 0#`;
-
-    comandoTopfly = `
+        let comandoTopfly = '';
+        if (topfly === 'Si' && idrelay) {
+            const apagado = `1234,${idrelay},0000,123.456.78.9,8027 1#`;
+            const encendido = `1234,${idrelay},0000,123.456.78.9,8027 0#`;
+            comandoTopfly = `
 ${linea('TOPFLY', idrelay)}
 ${linea('APAGADO', apagado)}
 ${linea('ENCENDIDO', encendido)}`;
-}
+        }
 
-const formato = `
+        const formato = `
 ${linea('B', b)}
 ${linea('F', f)}
 ${linea('H', h)}
@@ -174,12 +168,6 @@ ${linea('CO', co)}
 ${linea('M', m)}
 ${comandoTopfly}`.trim();
 
-
-
-
-
-
-
         const resDiv = document.getElementById('resultado');
         resDiv.innerText = formato;
         resDiv.style.display = 'block';
@@ -187,24 +175,26 @@ ${comandoTopfly}`.trim();
     }
 
     function toggleTopfly() {
-    const topfly = document.getElementById('topfly').value;
-    const cont = document.getElementById('topflyContainer');
-
-    if (topfly === 'Si') {
-        cont.style.display = 'block';
-    } else {
-        cont.style.display = 'none';
-        document.getElementById('idrelay').value = '';
+        const topfly = document.getElementById('topfly').value;
+        const cont = document.getElementById('topflyContainer');
+        if (topfly === 'Si') {
+            cont.style.display = 'block';
+        } else {
+            cont.style.display = 'none';
+            document.getElementById('idrelay').value = '';
+        }
     }
-}
 
-    function linea(clave, valor) {
-    return clave + '\t: ' + valor;
-}
-
-
-
-
+    function togglePanicoDonde() {
+        const panico = document.getElementById('panico').value;
+        const contenedor = document.getElementById('panicoDondeContainer');
+        if (panico === 'Si') {
+            contenedor.style.display = 'block';
+        } else {
+            contenedor.style.display = 'none';
+            document.getElementById('panicoDonde').value = '';
+        }
+    }
 
     function copiar() {
         const texto = document.getElementById('resultado').innerText;
@@ -216,24 +206,12 @@ ${comandoTopfly}`.trim();
             }, 1500);
         });
     }
-
-    function togglePanicoDonde() {
-    const panico = document.getElementById('panico').value;
-    const contenedor = document.getElementById('panicoDondeContainer');
-
-    if (panico === 'Si') {
-        contenedor.style.display = 'block';
-    } else {
-        contenedor.style.display = 'none';
-        document.getElementById('panicoDonde').value = '';
-    }
-}
-
 </script>
 
 </body>
-
 </html>
+
+
 
 
 
