@@ -111,9 +111,14 @@ button { width: 100%; padding: 12px; margin-top: 20px; border: none; border-radi
 </div>
 
 <script>
-function pad(clave, valor) {
-    return clave.padEnd(6, ' ') + ': ' + valor;
+function pad(clave, valor){
+    // ancho máximo de todas las etiquetas visibles
+    const ancho = 9; // Mide "ENCENDIDO" que es la más larga
+    let espacios = ' '.repeat(Math.max(ancho - clave.length, 0));
+    return clave + espacios + ' : ' + valor;
 }
+
+
 
 function generar() {
     const ahora = new Date();
@@ -140,35 +145,42 @@ function generar() {
     const idrelay = document.getElementById('idrelay').value;
 
     // Comando Topfly
-    let comandoTopfly = '';
-    if(topfly === 'Si' && idrelay){
-        const apagadoTF = `1234,${idrelay},0000,123.456.78.9,8027 1#`;
-        const encendidoTF = `1234,${idrelay},0000,123.456.78.9,8027 0#`;
-        comandoTopfly = '\n' + pad('TOPFLY', idrelay) + '\n' +
-                        pad('APAGADO', apagadoTF) + '\n' +
-                        pad('ENCENDIDO', encendidoTF);
-    }
+let comandoTopfly = '';
+if(topfly === 'Si' && idrelay){
+    const apagadoTF = `1234,${idrelay},0000,123.456.78.9,8027 1#`;
+    const encendidoTF = `1234,${idrelay},0000,123.456.78.9,8027 0#`;
+
+    comandoTopfly = '\n\n' +  // <- DOS saltos de línea antes
+                     pad('TOPFLY', idrelay) + '\n' +
+                     pad('APAGADO', apagadoTF) + '\n' +
+                     pad('ENCENDIDO', encendidoTF);
+}
+
+
+
 
     // Texto principal
-    const texto = 
-        pad('B', b) + '\n' +
-        pad('F', f) + '\n' +
-        pad('H', h) + '\n' +
-        pad('TEC', t) + '\n' +
-        pad('O', o) + '\n' +
-        pad('TT', tt) + '\n' +
-        pad('UP', up) + '\n' +
-        pad('P', p + (p==='Si' && pd ? ' (' + pd + ')' : '')) + '\n' +
-        pad('A', a) + '\n' +
-        pad('PT', pt) + '\n' +
-        pad('RP', rp) + '\n' +
-        pad('UG', ug) + '\n' +
-        pad('DP', dp) + '\n' +
-        pad('IGN', ign) + '\n' +
-        pad('IC', ic) + '\n' +
-        pad('CO', co) + '\n' +
-        pad('M', m) +
-        comandoTopfly;
+   const texto = 
+    pad('B', b) + '\n' +
+    pad('F', f) + '\n' +
+    pad('H', h) + '\n' +
+    pad('TEC', t) + '\n' +
+    pad('O', o) + '\n' +
+    pad('TT', tt) + '\n' +
+    pad('UP', up) + '\n' +
+    pad('P', p + (p==='Si' && pd ? ' (' + pd + ')' : '')) + '\n' +
+    pad('A', a) + '\n' +
+    pad('PT', pt) + '\n' +
+    pad('RP', rp) + '\n' +
+    pad('UG', ug) + '\n' +
+    pad('DP', dp) + '\n' +
+    pad('IGN', ign) + '\n' +
+    pad('IC', ic) + '\n' +
+    pad('CO', co) + '\n' +
+    pad('M', m) +
+    comandoTopfly; // <- ahora sí habrá un renglón en blanco visual
+
+
 
     const resDiv = document.getElementById('resultado');
     resDiv.innerText = texto;
@@ -202,5 +214,6 @@ function copiar() {
 
 </body>
 </html>
+
 
 
