@@ -151,7 +151,7 @@ if(topfly === 'Si' && idrelay){
     const encendidoTF = `1234,${idrelay},0000,123.456.78.9,8027 0#`;
 
     comandoTopfly = '\n\n' +  // <- DOS saltos de línea antes
-                     pad('TOPFLY', idrelay) + '\n' +
+                     pad('IDRelay', idrelay) + '\n' +
                      pad('APAGADO', apagadoTF) + '\n' +
                      pad('ENCENDIDO', encendidoTF);
 }
@@ -214,6 +214,7 @@ function copiar() {
 
 </body>
 </html>
+
 
 
 
