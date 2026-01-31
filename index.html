@@ -147,8 +147,8 @@ function generar() {
     // Comando Topfly
 let comandoTopfly = '';
 if(topfly === 'Si' && idrelay){
-    const apagadoTF = `1234,${idrelay},0000,123.456.78.9,8027 1#`;
-    const encendidoTF = `1234,${idrelay},0000,123.456.78.9,8027 0#`;
+    const apagadoTF = `BLERELAY,1234,${idrelay},654321,1#`;
+    const encendidoTF = `BLERELAY,1234,${idrelay},654321,0#`;
 
     comandoTopfly = '\n\n' +  // <- DOS saltos de línea antes
                      pad('IDRelay', idrelay) + '\n' +
