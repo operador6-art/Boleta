@@ -2,27 +2,138 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Generador de Boletas</title>
+<title>Generador de Boletas - Modo Oscuro</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📋</text></svg>">
 <style>
-body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
-.container { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
-h2 { color: #1a73e8; text-align: center; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-label { display: block; margin-top: 10px; font-weight: bold; font-size: 0.85em; color: #555; }
-input, select { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; background-color: #fff; }
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.grid-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-button { width: 100%; padding: 12px; margin-top: 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1em; transition: 0.3s; }
-.btn-generate { background: #1a73e8; color: white; }
-.btn-generate:hover { background: #1557b0; }
-.btn-copy { background: #34a853; color: white; display: none; margin-top: 10px; }
-#resultado { margin-top: 20px; padding: 15px; background: #fdfdfd; border: 1px solid #ddd; white-space: pre; font-family: 'Courier New', monospace; font-size: 14px; display: none; border-left: 5px solid #1a73e8; }
+/* === TEMA OSCURO: Fondo general oscuro y tarjeta más suave === */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #1a1e24; /* Fondo exterior oscuro */
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    min-height: 100vh;
+    align-items: center;
+}
+
+.container {
+    background: #2d333b; /* Fondo de la tarjeta gris oscuro (en lugar de blanco) */
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5); /* Sombra más pronunciada */
+    width: 100%;
+    max-width: 500px;
+    color: #e1e4e8; /* Color de texto principal claro */
+}
+
+h2 {
+    color: #58a6ff; /* Azul más brillante para el título */
+    text-align: center;
+    margin-top: 0;
+    border-bottom: 2px solid #444c56; /* Línea divisoria más oscura */
+    padding-bottom: 10px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 0.85em;
+    color: #adbac7; /* Gris claro para las etiquetas */
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #444c56; /* Borde oscuro */
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #22272e; /* Fondo de inputs oscuro */
+    color: #e1e4e8; /* Texto dentro de inputs claro */
+}
+
+/* Estilo para el contenedor del datalist (opcional, mejora la coherencia) */
+datalist {
+    background-color: #22272e;
+    color: #e1e4e8;
+}
+
+/* Opción para cuando se despliega el select */
+option {
+    background-color: #22272e;
+    color: #e1e4e8;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.grid-small {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: 0.3s;
+}
+
+.btn-generate {
+    background: #1f6feb; /* Azul más profundo */
+    color: white;
+}
+.btn-generate:hover {
+    background: #1158c7; /* Azul más oscuro al pasar el mouse */
+}
+
+.btn-copy {
+    background: #238636; /* Verde más oscuro y apagado */
+    color: white;
+    display: none;
+    margin-top: 10px;
+}
+.btn-copy:hover {
+    background: #2ea043; /* Verde un poco más brillante al pasar el mouse */
+}
+
+/* Estilo para el área de resultado */
+#resultado {
+    margin-top: 20px;
+    padding: 15px;
+    background: #1c2128; /* Fondo casi negro para el texto generado */
+    border: 1px solid #444c56;
+    white-space: pre;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    display: none;
+    border-left: 5px solid #58a6ff; /* Borde azul brillante */
+    color: #e1e4e8; /* Texto claro */
+    border-radius: 4px;
+}
+
+/* Ajuste para el contenedor de "Pánico" que aparece dinámicamente */
+#panicoDondeContainer {
+    margin-top: 10px;
+}
+
 </style>
 </head>
 <body>
 
 <div class="container">
-<h2>Boleta</h2>
+<h2>📋 Boleta (Modo Oscuro)</h2>
 
 <label>B (Número de Boleta):</label>
 <input type="number" id="numBoleta">
