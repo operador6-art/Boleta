@@ -2,240 +2,438 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Generador de Boletas</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📋</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boletas | Sistema de Gestión</title>
 <style>
-/* === TEMA OSCURO: Fondo general oscuro y tarjeta más suave === */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #1a1e24; /* Fondo exterior oscuro */
-    padding: 20px;
+  /* ================================================
+     SISTEMA DE BOLETAS - Estilo Propio
+     Paleta: Negro / Celeste / Blanco
+     ================================================ */
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    background: #000000;
+    padding: 24px;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
-    margin: 0;
-    min-height: 100vh;
     align-items: center;
-}
+  }
 
-.container {
-    background: #2d333b; /* Fondo de la tarjeta gris oscuro (en lugar de blanco) */
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5); /* Sombra más pronunciada */
+  /* Contenedor principal */
+  .panel {
+    background: #0a0a0a;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 20px;
+    padding: 28px;
+    max-width: 580px;
     width: 100%;
-    max-width: 500px;
-    color: #e1e4e8; /* Color de texto principal claro */
-}
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(0, 212, 255, 0.05) inset;
+    transition: all 0.3s ease;
+  }
 
-h2 {
-    color: #58a6ff; /* Azul más brillante para el título */
-    text-align: center;
-    margin-top: 0;
-    border-bottom: 2px solid #444c56; /* Línea divisoria más oscura */
-    padding-bottom: 10px;
-}
+  .panel:hover {
+    border-color: rgba(0, 212, 255, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 212, 255, 0.08);
+  }
 
-label {
+  /* Header */
+  .header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+  }
+
+  .title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff, #00d4ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: -0.02em;
+  }
+
+  .badge {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: #00d4ff;
+    text-transform: uppercase;
+    background: rgba(0, 212, 255, 0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+  }
+
+  /* Campos de formulario */
+  .field {
+    margin-bottom: 16px;
+  }
+
+  .label {
     display: block;
-    margin-top: 10px;
-    font-weight: bold;
-    font-size: 0.85em;
-    color: #adbac7; /* Gris claro para las etiquetas */
-}
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #00d4ff;
+    margin-bottom: 6px;
+  }
 
-input, select {
+  .label span {
+    color: #555;
+    margin-left: 8px;
+    font-size: 0.6rem;
+    font-weight: normal;
+  }
+
+  input, select {
     width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #444c56; /* Borde oscuro */
-    border-radius: 4px;
-    box-sizing: border-box;
-    background-color: #22272e; /* Fondo de inputs oscuro */
-    color: #e1e4e8; /* Texto dentro de inputs claro */
-}
+    padding: 10px 14px;
+    background: #0d0d0d;
+    border: 1px solid #1a1a1a;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    color: #ffffff;
+    transition: all 0.2s ease;
+    font-family: monospace;
+  }
 
-/* Estilo para el contenedor del datalist (opcional, mejora la coherencia) */
-datalist {
-    background-color: #22272e;
-    color: #e1e4e8;
-}
+  input:focus, select:focus {
+    outline: none;
+    border-color: #00d4ff;
+    box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.15);
+  }
 
-/* Opción para cuando se despliega el select */
-option {
-    background-color: #22272e;
-    color: #e1e4e8;
-}
+  input:hover, select:hover {
+    border-color: #333;
+  }
 
-.grid {
+  /* Grids */
+  .grid-2 {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-}
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+  }
 
-.grid-small {
+  .grid-4 {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-}
+    gap: 12px;
+    margin-bottom: 16px;
+  }
 
-button {
+  .grid-4 .field {
+    margin-bottom: 0;
+  }
+
+  /* Botones */
+  .btn {
     width: 100%;
     padding: 12px;
-    margin-top: 20px;
-    border: none;
-    border-radius: 4px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
     cursor: pointer;
-    font-weight: bold;
-    font-size: 1em;
-    transition: 0.3s;
-}
+    transition: all 0.2s ease;
+    margin-top: 8px;
+  }
 
-.btn-generate {
-    background: #1f6feb; /* Azul más profundo */
-    color: white;
-}
-.btn-generate:hover {
-    background: #1158c7; /* Azul más oscuro al pasar el mouse */
-}
+  .btn-primary {
+    background: transparent;
+    border: 1.5px solid #00d4ff;
+    color: #00d4ff;
+  }
 
-.btn-copy {
-    background: #238636; /* Verde más oscuro y apagado */
-    color: white;
+  .btn-primary:hover {
+    background: #00d4ff;
+    color: #000000;
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid #333;
+    color: #aaa;
+  }
+
+  .btn-secondary:hover {
+    border-color: #00d4ff;
+    color: #00d4ff;
+  }
+
+  /* Resultado */
+  .result {
+    margin-top: 24px;
+    padding: 16px;
+    background: #050505;
+    border: 1px solid #1a1a1a;
+    border-radius: 12px;
     display: none;
-    margin-top: 10px;
-}
-.btn-copy:hover {
-    background: #2ea043; /* Verde un poco más brillante al pasar el mouse */
-}
+    border-left: 3px solid #00d4ff;
+  }
 
-/* Estilo para el área de resultado */
-#resultado {
-    margin-top: 20px;
-    padding: 15px;
-    background: #1c2128; /* Fondo casi negro para el texto generado */
-    border: 1px solid #444c56;
-    white-space: pre;
-    font-family: 'Courier New', monospace;
-    font-size: 14px;
+  .result pre {
+    font-family: 'Courier New', 'SF Mono', monospace;
+    font-size: 0.8rem;
+    color: #e0e0e0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    line-height: 1.5;
+  }
+
+  /* Campos condicionales */
+  .conditional {
     display: none;
-    border-left: 5px solid #58a6ff; /* Borde azul brillante */
-    color: #e1e4e8; /* Texto claro */
-    border-radius: 4px;
-}
+    margin-top: 8px;
+    animation: fadeIn 0.2s ease;
+  }
 
-/* Ajuste para el contenedor de "Pánico" que aparece dinámicamente */
-#panicoDondeContainer {
-    margin-top: 10px;
-}
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
+  /* Separador */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0 16px;
+  }
+
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+  }
+
+  .divider-text {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: #00d4ff;
+    text-transform: uppercase;
+  }
+
+  /* Select pequeño */
+  .select-sm {
+    font-size: 0.75rem;
+    padding: 8px 10px;
+  }
+
+  /* Hint / ayuda */
+  .hint {
+    font-size: 0.6rem;
+    color: #555;
+    margin-top: 4px;
+  }
+
+  /* Status LED */
+  .status {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+  }
+
+  .led {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.6rem;
+    color: #00d4ff;
+  }
+
+  .led::before {
+    content: "●";
+    font-size: 0.7rem;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; text-shadow: 0 0 2px #00d4ff; }
+    50% { opacity: 0.5; text-shadow: 0 0 6px #00d4ff; }
+  }
 </style>
 </head>
 <body>
 
-<div class="container">
-<h2>📋 Boleta </h2>
+<div class="panel">
+  <div class="header">
+    <h1 class="title">BOLETA</h1>
+    <span class="badge">SISTEMA</span>
+  </div>
 
-<label>B (Número de Boleta):</label>
-<input type="number" id="numBoleta">
+  <div class="status">
+    <span class="led">ONLINE</span>
+  </div>
 
-<label>T (Técnico):</label>
-<input list="tecnicos" id="tecnico" placeholder="Seleccione o escriba el nombre...">
-<datalist id="tecnicos">
-    <option value="Alejandro J.">
-    <option value="Edwin O.">
-    <option value="Franklin R.">
-    <option value="Javier J.">
-    <option value="Jorge M.">
-    <option value="Manuel G.">
-    <option value="Samuel S.">
-    <option value="Sebastian A.">
-    <option value="Antonio C.">
-    <option value="Alessandro H.">
-</datalist>
+  <!-- B - Número de Boleta -->
+  <div class="field">
+    <div class="label">B <span>[NÚMERO DE BOLETA]</span></div>
+    <input type="number" id="numBoleta" placeholder="Ingrese número">
+  </div>
 
-<label>O (Operador):</label>
-<input list="operadores" id="operador" placeholder="Seleccione o escriba el operador...">
-<datalist id="operadores">
-    <option value="Daniel H.">
-    <option value="Hector L.">
-    <option value="Josué R.">
-    <option value="Carlos N.">
-    <option value="Eduardo C.">
-</datalist>
-
-<label>T (Tipo de Trabajo):</label>
-<input type="text" id="tipoTrabajo" value="Nueva instalacion">
-
-<label>UP (Ubicación GPS):</label>
-<input type="text" id="ubicacion" value="Atras del tacometro">
-
-<div class="grid">
-    <div>
-        <label>P (Pánico):</label>
-        <select id="panico" onchange="togglePanicoDonde()">
-            <option>No</option>
-            <option>Si</option>
-        </select>
+  <!-- Técnico y Operador -->
+  <div class="grid-2">
+    <div class="field">
+      <div class="label">TEC <span>[TÉCNICO]</span></div>
+      <input list="tecnicos" id="tecnico" placeholder="Seleccione o escriba">
+      <datalist id="tecnicos">
+        <option>Alejandro J.</option><option>Edwin O.</option><option>Franklin R.</option>
+        <option>Javier J.</option><option>Jorge M.</option><option>Manuel G.</option>
+        <option>Samuel S.</option><option>Sebastian A.</option><option>Antonio C.</option>
+        <option>Alessandro H.</option>
+      </datalist>
     </div>
-    <div>
-        <div id="panicoDondeContainer" style="display:none;">
-            <label>P - ¿Dónde?:</label>
-            <input type="text" id="panicoDonde" placeholder="Indique dónde está el pánico">
-        </div>
-        <label>A (Apagado):</label>
-        <select id="apagado">
-            <option>No</option>
-            <option>Si. Normal 12V</option>
-        </select>
+    <div class="field">
+      <div class="label">O <span>[OPERADOR]</span></div>
+      <input list="operadores" id="operador" placeholder="Seleccione o escriba">
+      <datalist id="operadores">
+        <option>Daniel H.</option><option>Hector L.</option><option>Josué R.</option>
+        <option>Carlos N.</option><option>Eduardo C.</option>
+      </datalist>
     </div>
-</div>
+  </div>
 
-<label>PT (Plataforma):</label>
-<select id="pt">
-    <option value="CXPSFLEET">CXPSFLEET</option>
-    <option value="COMPASSXPS">COMPASSXPS</option>
-</select>
+  <!-- Tipo de Trabajo y Ubicación -->
+  <div class="grid-2">
+    <div class="field">
+      <div class="label">TT <span>[TRABAJO]</span></div>
+      <input type="text" id="tipoTrabajo" value="Nueva instalacion">
+    </div>
+    <div class="field">
+      <div class="label">UP <span>[UBICACIÓN GPS]</span></div>
+      <input type="text" id="ubicacion" value="Atras del tacometro">
+    </div>
+  </div>
 
-<div class="grid-small">
-    <div><label>RP:</label><select id="rp"><option>Si</option><option>No</option></select></div>
-    <div><label>UG:</label><select id="ug"><option>Si</option><option>No</option></select></div>
-    <div><label>DP:</label><select id="dp"><option>Si</option><option>No</option></select></div>
-    <div><label>IGN:</label><select id="ign"><option>Si</option><option>No</option></select></div>
-    <div><label>IC:</label><select id="ic"><option>Si</option><option>No</option></select></div>
-    <div><label>CO:</label><select id="co"><option>Si</option><option>No</option></select></div>
-    <div><label>M:</label><select id="m"><option>No</option><option>Si</option></select></div>
-</div>
+  <!-- Pánico -->
+  <div class="grid-2">
+    <div class="field">
+      <div class="label">P <span>[PÁNICO]</span></div>
+      <select id="panico">
+        <option>No</option>
+        <option>Si</option>
+      </select>
+    </div>
+    <div id="panicoDondeContainer" class="conditional">
+      <div class="label">P - ¿DÓNDE?</div>
+      <input type="text" id="panicoDonde" placeholder="Ubicación del pánico">
+    </div>
+  </div>
 
-<label>Topfly?</label>
-<select id="topfly" onchange="toggleTopfly()">
-    <option>No</option>
-    <option>Si</option>
-</select>
+  <!-- Apagado -->
+  <div class="field">
+    <div class="label">A <span>[APAGADO]</span></div>
+    <select id="apagado">
+      <option>No</option>
+      <option>Si. Normal 12V</option>
+    </select>
+  </div>
 
-<div id="topflyContainer" style="display:none;">
-    <label>IDRelay:</label>
+  <!-- Plataforma -->
+  <div class="field">
+    <div class="label">PT <span>[PLATAFORMA]</span></div>
+    <select id="pt">
+      <option value="CXPSFLEET">CXPSFLEET</option>
+      <option value="COMPASSXPS">COMPASSXPS</option>
+    </select>
+  </div>
+
+  <div class="divider">
+    <span class="divider-line"></span>
+    <span class="divider-text">MÓDULOS</span>
+    <span class="divider-line"></span>
+  </div>
+
+  <!-- Módulos -->
+  <div class="grid-4">
+    <div class="field"><div class="label">RP</div><select id="rp" class="select-sm"><option>Si</option><option>No</option></select></div>
+    <div class="field"><div class="label">UG</div><select id="ug" class="select-sm"><option>Si</option><option>No</option></select></div>
+    <div class="field"><div class="label">DP</div><select id="dp" class="select-sm"><option>Si</option><option>No</option></select></div>
+    <div class="field"><div class="label">IGN</div><select id="ign" class="select-sm"><option>Si</option><option>No</option></select></div>
+    <div class="field"><div class="label">IC</div><select id="ic" class="select-sm"><option>Si</option><option>No</option></select></div>
+    <div class="field"><div class="label">CO</div><select id="co" class="select-sm"><option>Si</option><option>No</option></select></div>
+    <div class="field"><div class="label">M</div><select id="m" class="select-sm"><option>No</option><option>Si</option></select></div>
+  </div>
+
+  <div class="divider">
+    <span class="divider-line"></span>
+    <span class="divider-text">TOPFLY</span>
+    <span class="divider-line"></span>
+  </div>
+
+  <!-- Topfly -->
+  <div class="field">
+    <div class="label">TOPFLY</div>
+    <select id="topfly">
+      <option>No</option>
+      <option>Si</option>
+    </select>
+  </div>
+
+  <div id="topflyContainer" class="conditional">
+    <div class="label">ID RELAY</div>
     <input type="text" id="idrelay" placeholder="Pegue el IDRelay">
-</div>
+    <div class="hint">Se generarán comandos BLERELAY automáticos</div>
+  </div>
 
-<button class="btn-generate" onclick="generar()">GENERAR TEXTO</button>
-<div id="resultado"></div>
-<button id="btnCopy" class="btn-copy" onclick="copiar()">📋 COPIAR AL PORTAPAPELES</button>
-
+  <button class="btn btn-primary" id="generarBtn">▶ GENERAR TEXTO</button>
+  
+  <div id="resultado" class="result">
+    <pre id="resultadoTexto"></pre>
+  </div>
+  
+  <button id="btnCopy" class="btn btn-secondary" style="display: none;">📋 COPIAR</button>
 </div>
 
 <script>
-function pad(clave, valor){
-    // ancho máximo de todas las etiquetas visibles
-    const ancho = 9; // Mide "ENCENDIDO" que es la más larga
+  // Pánico: mostrar/ocultar campo "¿Dónde?"
+  const panicoSelect = document.getElementById('panico');
+  const panicoDondeContainer = document.getElementById('panicoDondeContainer');
+  const panicoDondeInput = document.getElementById('panicoDonde');
+
+  panicoSelect.addEventListener('change', function() {
+    panicoDondeContainer.style.display = this.value === 'Si' ? 'block' : 'none';
+    if (this.value !== 'Si') panicoDondeInput.value = '';
+  });
+
+  // Topfly: mostrar/ocultar campo IDRelay
+  const topflySelect = document.getElementById('topfly');
+  const topflyContainer = document.getElementById('topflyContainer');
+  const idrelayInput = document.getElementById('idrelay');
+
+  topflySelect.addEventListener('change', function() {
+    topflyContainer.style.display = this.value === 'Si' ? 'block' : 'none';
+    if (this.value !== 'Si') idrelayInput.value = '';
+  });
+
+  // Alinear texto (9 espacios)
+  function pad(clave, valor) {
+    const ancho = 9;
     let espacios = ' '.repeat(Math.max(ancho - clave.length, 0));
     return clave + espacios + ' : ' + valor;
-}
+  }
 
-
-
-function generar() {
+  // Generar boleta
+  function generar() {
     const ahora = new Date();
-    const opcionesFecha = { weekday:'long', year:'numeric', month:'long', day:'numeric'};
+    const opcionesFecha = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
     const b = document.getElementById('numBoleta').value;
     const f = ahora.toLocaleDateString('es-ES', opcionesFecha);
     const h = ahora.toLocaleTimeString('es-ES');
@@ -257,78 +455,54 @@ function generar() {
     const topfly = document.getElementById('topfly').value;
     const idrelay = document.getElementById('idrelay').value;
 
-    // Comando Topfly
-let comandoTopfly = '';
-if(topfly === 'Si' && idrelay){
-    const apagadoTF = `BLERELAY,1234,${idrelay},654321,1#`;
-    const encendidoTF = `BLERELAY,1234,${idrelay},654321,0#`;
+    let comandoTopfly = '';
+    if (topfly === 'Si' && idrelay) {
+      const apagadoTF = `BLERELAY,1234,${idrelay},654321,1#`;
+      const encendidoTF = `BLERELAY,1234,${idrelay},654321,0#`;
+      comandoTopfly = '\n\n' + pad('IDRelay', idrelay) + '\n' +
+                       pad('APAGADO', apagadoTF) + '\n' +
+                       pad('ENCENDIDO', encendidoTF);
+    }
 
-    comandoTopfly = '\n\n' +  // <- DOS saltos de línea antes
-                     pad('IDRelay', idrelay) + '\n' +
-                     pad('APAGADO', apagadoTF) + '\n' +
-                     pad('ENCENDIDO', encendidoTF);
-}
+    const texto = pad('B', b) + '\n' +
+                  pad('F', f) + '\n' +
+                  pad('H', h) + '\n' +
+                  pad('TEC', t) + '\n' +
+                  pad('O', o) + '\n' +
+                  pad('TT', tt) + '\n' +
+                  pad('UP', up) + '\n' +
+                  pad('P', p + (p === 'Si' && pd ? ' (' + pd + ')' : '')) + '\n' +
+                  pad('A', a) + '\n' +
+                  pad('PT', pt) + '\n' +
+                  pad('RP', rp) + '\n' +
+                  pad('UG', ug) + '\n' +
+                  pad('DP', dp) + '\n' +
+                  pad('IGN', ign) + '\n' +
+                  pad('IC', ic) + '\n' +
+                  pad('CO', co) + '\n' +
+                  pad('M', m) +
+                  comandoTopfly;
 
-
-
-
-    // Texto principal
-   const texto = 
-    pad('B', b) + '\n' +
-    pad('F', f) + '\n' +
-    pad('H', h) + '\n' +
-    pad('TEC', t) + '\n' +
-    pad('O', o) + '\n' +
-    pad('TT', tt) + '\n' +
-    pad('UP', up) + '\n' +
-    pad('P', p + (p==='Si' && pd ? ' (' + pd + ')' : '')) + '\n' +
-    pad('A', a) + '\n' +
-    pad('PT', pt) + '\n' +
-    pad('RP', rp) + '\n' +
-    pad('UG', ug) + '\n' +
-    pad('DP', dp) + '\n' +
-    pad('IGN', ign) + '\n' +
-    pad('IC', ic) + '\n' +
-    pad('CO', co) + '\n' +
-    pad('M', m) +
-    comandoTopfly; // <- ahora sí habrá un renglón en blanco visual
-
-
-
-    const resDiv = document.getElementById('resultado');
-    resDiv.innerText = texto;
-    resDiv.style.display = 'block';
+    const resultadoDiv = document.getElementById('resultado');
+    const resultadoTexto = document.getElementById('resultadoTexto');
+    resultadoTexto.innerText = texto;
+    resultadoDiv.style.display = 'block';
     document.getElementById('btnCopy').style.display = 'block';
-}
+  }
 
-function toggleTopfly() {
-    const topfly = document.getElementById('topfly').value;
-    const cont = document.getElementById('topflyContainer');
-    cont.style.display = topfly==='Si' ? 'block' : 'none';
-    if(topfly!=='Si') document.getElementById('idrelay').value='';
-}
+  // Copiar al portapapeles
+  function copiar() {
+    const texto = document.getElementById('resultadoTexto').innerText;
+    navigator.clipboard.writeText(texto).then(() => {
+      const btn = document.getElementById('btnCopy');
+      btn.innerText = "✓ COPIADO";
+      setTimeout(() => { btn.innerText = "📋 COPIAR"; }, 1500);
+    }).catch(() => alert('No se pudo copiar'));
+  }
 
-function togglePanicoDonde() {
-    const panico = document.getElementById('panico').value;
-    const cont = document.getElementById('panicoDondeContainer');
-    cont.style.display = panico==='Si' ? 'block' : 'none';
-    if(panico!=='Si') document.getElementById('panicoDonde').value='';
-}
-
-function copiar() {
-    const texto = document.getElementById('resultado').innerText;
-    navigator.clipboard.writeText(texto).then(()=>{
-        const btn = document.getElementById('btnCopy');
-        btn.innerText="¡COPIADO!";
-        setTimeout(()=>{ btn.innerText="📋 COPIAR AL PORTAPAPELES"; },1500);
-    });
-}
+  // Eventos
+  document.getElementById('generarBtn').addEventListener('click', generar);
+  document.getElementById('btnCopy').addEventListener('click', copiar);
 </script>
-
 </body>
 </html>
-
-
-
-
-
