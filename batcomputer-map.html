@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mapa de Flota</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+:root{
+  --black:#000;
+  --dark:#010810;
+  --neon:#00cfff;
+  --neon2:#00eeff;
+  --dim:rgba(0,207,255,0.12);
+
+  --text:#c0eeff;
+  --text-dim:#1a4a60;
+  --text-mid:#2a7090;
+
+  --border:rgba(0,207,255,0.2);
+  --border2:rgba(0,207,255,0.45);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:'Rajdhani',sans-serif;
+  background:#000;
+  color:var(--text);
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+/* GRID BG */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  z-index:0;
+
+  background-image:
+    linear-gradient(rgba(0,207,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,207,255,0.03) 1px, transparent 1px);
+
+  background-size:32px 32px;
+  pointer-events:none;
+}
+
+/* HEADER */
+.header{
+  position:relative;
+  z-index:100;
+
+  background:rgba(0,8,18,0.97);
+  border-bottom:1px solid var(--border2);
+
+  padding:0.75rem 1.2rem;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  flex-shrink:0;
+
+  box-shadow:0 0 20px rgba(0,207,255,0.1);
+}
+
+.header::after{
+  content:'';
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  height:1px;
+
+  background:linear-gradient(
+    90deg,
+    transparent,
+    var(--neon2),
+    transparent
+  );
+
+  box-shadow:0 0 8px var(--neon);
+}
+
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:1rem;
+}
+
+.header-title{
+  font-family:'Orbitron',monospace;
+  font-size:1rem;
+  font-weight:900;
+  letter-spacing:0.1em;
+
+  color:var(--neon2);
+
+  text-shadow:
+    0 0 10px var(--neon),
+    0 0 20px rgba(0,207,255,0.35);
+}
+
+.header-title span{
+  color:var(--text);
+  font-weight:600;
+}
+
+.header-sub{
+  font-family:'Orbitron',monospace;
+  font-size:0.62rem;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+
+  color:var(--text-mid);
+}
+
+.header-right{
+  display:flex;
+  align-items:center;
+  gap:1rem;
+}
+
+.stat-pill{
+  display:flex;
+  align-items:center;
+  gap:6px;
+
+  background:rgba(0,207,255,0.06);
+
+  border:1px solid rgba(0,207,255,0.25);
+  border-radius:2px;
+
+  padding:4px 12px;
+
+  font-family:'Orbitron',monospace;
+  font-size:0.48rem;
+  font-weight:700;
+  letter-spacing:0.15em;
+
+  color:var(--neon);
+}
+
+.stat-pill .count{
+  font-size:0.85rem;
+  font-weight:900;
+
+  color:var(--neon2);
+
+  text-shadow:0 0 8px var(--neon);
+}
+
+.led{
+  width:5px;
+  height:5px;
+  border-radius:50%;
+
+  background:var(--neon2);
+
+  box-shadow:0 0 8px var(--neon2);
+
+  animation:ledBlink 1.6s ease-in-out infinite;
+}
+
+@keyframes ledBlink{
+  0%,100%{opacity:1;}
+  50%{opacity:0.2;}
+}
+
+/* MAIN */
+.main{
+  display:flex;
+  flex:1;
+  overflow:hidden;
+  position:relative;
+  z-index:1;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:260px;
+  flex-shrink:0;
+
+  background:rgba(0,6,14,0.97);
+
+  border-right:1px solid var(--border2);
+
+  display:flex;
+  flex-direction:column;
+
+  overflow:hidden;
+}
+
+.sidebar-header{
+  padding:0.8rem 1rem;
+
+  border-bottom:1px solid var(--border);
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.sidebar-title{
+  font-family:'Orbitron',monospace;
+  font-size:0.5rem;
+  font-weight:700;
+  letter-spacing:0.25em;
+  text-transform:uppercase;
+
+  color:var(--text-mid);
+}
+
+.sidebar-count{
+  font-family:'Orbitron',monospace;
+  font-size:0.48rem;
+
+  color:var(--neon);
+
+  background:var(--dim);
+
+  border:1px solid var(--border);
+
+  padding:2px 8px;
+
+  border-radius:2px;
+}
+
+.node-list{
+  flex:1;
+  overflow-y:auto;
+
+  padding:0.5rem;
+}
+
+.node-list::-webkit-scrollbar{
+  width:3px;
+}
+
+.node-list::-webkit-scrollbar-thumb{
+  background:rgba(0,207,255,0.2);
+  border-radius:2px;
+}
+
+.node-item{
+  display:flex;
+  align-items:center;
+  gap:0.75rem;
+
+  padding:0.6rem 0.8rem;
+
+  border-radius:3px;
+
+  cursor:pointer;
+
+  border:1px solid transparent;
+
+  transition:all 0.18s ease;
+
+  margin-bottom:0.3rem;
+
+  position:relative;
+  overflow:hidden;
+}
+
+.node-item::before{
+  content:'';
+
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+
+  width:2px;
+
+  background:var(--neon);
+
+  opacity:0;
+
+  transition:opacity 0.18s;
+
+  box-shadow:0 0 8px var(--neon);
+}
+
+.node-item:hover,
+.node-item.active{
+  background:rgba(0,207,255,0.06);
+
+  border-color:rgba(0,207,255,0.25);
+
+  transform:translateX(3px);
+}
+
+.node-item:hover::before,
+.node-item.active::before{
+  opacity:1;
+}
+
+.node-dot-wrap{
+  position:relative;
+  width:10px;
+  height:10px;
+  flex-shrink:0;
+}
+
+.node-dot{
+  width:8px;
+  height:8px;
+
+  border-radius:50%;
+
+  position:absolute;
+  top:1px;
+  left:1px;
+}
+
+.node-dot.online{
+  background:#00ff88;
+  box-shadow:0 0 6px #00ff88;
+}
+
+.node-dot.offline{
+  background:#ff4444;
+  box-shadow:0 0 6px #ff4444;
+}
+
+.node-dot.warning{
+  background:#ffaa00;
+  box-shadow:0 0 6px #ffaa00;
+}
+
+.node-dot.online::after{
+  content:'';
+
+  position:absolute;
+  inset:-3px;
+
+  border-radius:50%;
+
+  border:1px solid #00ff88;
+
+  opacity:0;
+
+  animation:ripple 2s ease-out infinite;
+}
+
+@keyframes ripple{
+  0%{
+    transform:scale(0.8);
+    opacity:0.6;
+  }
+
+  100%{
+    transform:scale(2.2);
+    opacity:0;
+  }
+}
+
+.node-info{
+  flex:1;
+  min-width:0;
+}
+
+.node-name{
+  font-size:0.82rem;
+  font-weight:700;
+
+  color:var(--text);
+
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+
+  line-height:1;
+
+  margin-bottom:0.15rem;
+}
+
+.node-coords{
+  font-family:'Orbitron',monospace;
+  font-size:0.42rem;
+  letter-spacing:0.05em;
+
+  color:var(--text-dim);
+}
+
+.node-status{
+  font-size:0.48rem;
+  font-weight:700;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+
+  padding:2px 6px;
+  border-radius:2px;
+
+  flex-shrink:0;
+}
+
+.node-status.online{
+  color:#00ff88;
+  background:rgba(0,255,136,0.08);
+  border:1px solid rgba(0,255,136,0.2);
+}
+
+.node-status.offline{
+  color:#ff4444;
+  background:rgba(255,68,68,0.08);
+  border:1px solid rgba(255,68,68,0.2);
+}
+
+.node-status.warning{
+  color:#ffaa00;
+  background:rgba(255,170,0,0.08);
+  border:1px solid rgba(255,170,0,0.2);
+}
+
+/* MAP */
+#map{
+  flex:1;
+  position:relative;
+  z-index:1;
+}
+
+/* LEAFLET */
+.leaflet-container{
+  background:#000810 !important;
+  font-family:'Rajdhani',sans-serif !important;
+}
+
+.leaflet-tile{
+  filter:
+    brightness(0.25)
+    saturate(0.3)
+    hue-rotate(180deg)
+    invert(0.05) !important;
+}
+
+.leaflet-control-zoom a{
+  background:rgba(0,8,18,0.95) !important;
+
+  border:1px solid rgba(0,207,255,0.3) !important;
+
+  color:var(--neon) !important;
+
+  font-family:'Orbitron',monospace !important;
+
+  width:28px !important;
+  height:28px !important;
+
+  line-height:28px !important;
+}
+
+.leaflet-control-zoom a:hover{
+  background:rgba(0,207,255,0.12) !important;
+
+  box-shadow:0 0 10px rgba(0,207,255,0.2) !important;
+}
+
+.leaflet-control-attribution{
+  background:rgba(0,4,10,0.8) !important;
+
+  color:#1a4a60 !important;
+
+  font-size:0.55rem !important;
+}
+
+/* POPUP */
+.leaflet-popup-content-wrapper{
+  background:rgba(0,8,20,0.97) !important;
+
+  border:1px solid rgba(0,207,255,0.4) !important;
+
+  border-radius:4px !important;
+
+  box-shadow:
+    0 0 20px rgba(0,207,255,0.2),
+    0 4px 20px rgba(0,0,0,0.8) !important;
+
+  color:var(--text) !important;
+}
+
+.leaflet-popup-tip{
+  background:rgba(0,207,255,0.4) !important;
+}
+
+/* FOOTER */
+.footer-bar{
+  position:relative;
+  z-index:100;
+
+  background:rgba(0,6,14,0.97);
+
+  border-top:1px solid var(--border);
+
+  padding:0.4rem 1.2rem;
+
+  display:flex;
+  align-items:center;
+  gap:2rem;
+
+  flex-shrink:0;
+}
+
+.footer-bar::before{
+  content:'';
+
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:1px;
+
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(0,207,255,0.2),
+    transparent
+  );
+}
+
+.footer-stat{
+  display:flex;
+  align-items:center;
+  gap:6px;
+
+  font-size:0.62rem;
+  letter-spacing:0.08em;
+
+  color:var(--text-dim);
+}
+
+.footer-stat .val{
+  font-family:'Orbitron',monospace;
+  font-size:0.6rem;
+  font-weight:700;
+}
+
+.green{color:#00ff88;}
+.red{color:#ff4444;}
+.amber{color:#ffaa00;}
+.cyan{color:var(--neon);}
+
+.footer-time{
+  margin-left:auto;
+
+  font-family:'Orbitron',monospace;
+  font-size:0.55rem;
+  letter-spacing:0.1em;
+
+  color:var(--text-mid);
+}
+
+/* POPUP CONTENT */
+.popup-inner{
+  padding:4px 2px;
+  min-width:160px;
+}
+
+.popup-name{
+  font-family:'Orbitron',monospace;
+  font-size:0.7rem;
+  font-weight:700;
+
+  color:var(--neon2);
+
+  margin-bottom:0.5rem;
+  padding-bottom:0.4rem;
+
+  border-bottom:1px solid rgba(0,207,255,0.2);
+
+  text-shadow:0 0 8px var(--neon);
+}
+
+.popup-row{
+  display:flex;
+  justify-content:space-between;
+
+  font-size:0.72rem;
+
+  margin-bottom:0.25rem;
+}
+
+.popup-label{
+  color:var(--text-mid);
+  font-weight:600;
+  letter-spacing:0.08em;
+}
+
+.popup-value{
+  color:var(--text);
+
+  font-family:'Orbitron',monospace;
+  font-size:0.6rem;
+}
+
+/* MARKER PULSE */
+@keyframes markerPulse{
+  0%{
+    width:10px;
+    height:10px;
+    opacity:0.9;
+    margin-top:-5px;
+    margin-left:-5px;
+  }
+
+  100%{
+    width:40px;
+    height:40px;
+    opacity:0;
+    margin-top:-20px;
+    margin-left:-20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+
+  <div class="header-left">
+    <div>
+      <div class="header-title">
+        MONITOR <span>CENTRAL</span>
+      </div>
+
+      <div class="header-sub">
+        Baticueva · Rastreo Global
+      </div>
+    </div>
+  </div>
+
+  <div class="header-right">
+
+    <div class="stat-pill">
+      <div class="led"></div>
+      NODOS ACTIVOS
+      <span class="count" id="activeCount">0</span>
+    </div>
+
+    <div class="stat-pill">
+      TOTAL
+      <span class="count" id="totalCount">0</span>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <div class="sidebar-header">
+      <span class="sidebar-title">
+        Lista de Nodos
+      </span>
+
+      <span class="sidebar-count" id="sidebarCount">
+        0
+      </span>
+    </div>
+
+    <div class="node-list" id="nodeList"></div>
+
+  </div>
+
+  <!-- MAP -->
+  <div id="map"></div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer-bar">
+
+  <div class="footer-stat">
+    ONLINE
+    <span class="val green" id="footOnline">0</span>
+  </div>
+
+  <div class="footer-stat">
+    OFFLINE
+    <span class="val red" id="footOffline">0</span>
+  </div>
+
+  <div class="footer-stat">
+    ALERTA
+    <span class="val amber" id="footWarning">0</span>
+  </div>
+
+  <div class="footer-stat">
+    ZOOM
+    <span class="val cyan" id="footZoom">2</span>
+  </div>
+
+  <div class="footer-time" id="footTime">
+    --:--:--
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════
+// NODOS
+// ═══════════════════════════════
+const NODES = [
+  { id:1,  name:"UNIDAD-001", lat:13.6929,  lng:-89.2182, status:"online",  info:"San Salvador, SV" },
+  { id:2,  name:"UNIDAD-002", lat:14.0818,  lng:-87.2068, status:"online",  info:"Tegucigalpa, HN" },
+  { id:3,  name:"UNIDAD-003", lat:12.1364,  lng:-86.8914, status:"warning", info:"Managua, NI" },
+  { id:4,  name:"UNIDAD-004", lat:9.9281,   lng:-84.0907, status:"online",  info:"San José, CR" },
+  { id:5,  name:"UNIDAD-005", lat:8.9936,   lng:-79.5197, status:"offline", info:"Ciudad de Panamá" },
+  { id:6,  name:"UNIDAD-006", lat:4.7110,   lng:-74.0721, status:"online",  info:"Bogotá, CO" },
+  { id:7,  name:"UNIDAD-007", lat:-12.0464, lng:-77.0428, status:"online",  info:"Lima, PE" },
+  { id:8,  name:"UNIDAD-008", lat:-33.4489, lng:-70.6693, status:"warning", info:"Santiago, CL" },
+  { id:9,  name:"UNIDAD-009", lat:-23.5505, lng:-46.6333, status:"online",  info:"São Paulo, BR" },
+  { id:10, name:"UNIDAD-010", lat:40.4168,  lng:-3.7038,  status:"offline", info:"Madrid, ES" }
+];
+
+// ═══════════════════════════════
+// COLORES
+// ═══════════════════════════════
+const COLORS = {
+  online:{
+    dot:'#00ff88'
+  },
+
+  offline:{
+    dot:'#ff4444'
+  },
+
+  warning:{
+    dot:'#ffaa00'
+  }
+};
+
+// ═══════════════════════════════
+// MAPA
+// ═══════════════════════════════
+const map = L.map('map',{
+  center:[10,-60],
+  zoom:2,
+  zoomControl:true
+});
+
+L.tileLayer(
+  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {
+    attribution:'© OpenStreetMap',
+    maxZoom:18
+  }
+).addTo(map);
+
+map.on('zoomend',()=>{
+  document.getElementById('footZoom').textContent = map.getZoom();
+});
+
+// ═══════════════════════════════
+// MARKERS
+// ═══════════════════════════════
+const markers = {};
+
+function createMarkerIcon(status){
+
+  const color = COLORS[status].dot;
+
+  const html = `
+    <div style="position:relative;width:36px;height:36px;">
+
+      <div
+        style="
+          position:absolute;
+          top:50%;
+          left:50%;
+          width:10px;
+          height:10px;
+          border-radius:50%;
+          background:${color};
+          box-shadow:0 0 8px ${color},0 0 16px ${color};
+          transform:translate(-50%,-50%);
+          z-index:2;
+        ">
+      </div>
+
+      <div
+        style="
+          position:absolute;
+          top:50%;
+          left:50%;
+          width:10px;
+          height:10px;
+          border-radius:50%;
+          border:2px solid ${color};
+          transform:translate(-50%,-50%);
+          animation:markerPulse 2s ease-out infinite;
+          z-index:1;
+        ">
+      </div>
+
+    </div>
+  `;
+
+  return L.divIcon({
+    html:html,
+    className:'',
+    iconSize:[36,36],
+    iconAnchor:[18,18],
+    popupAnchor:[0,-18]
+  });
+}
+
+function buildPopup(node){
+
+  const statusLabel =
+    node.status === 'online'
+      ? 'ONLINE'
+      : node.status === 'offline'
+      ? 'OFFLINE'
+      : 'ALERTA';
+
+  const statusClass =
+    node.status === 'online'
+      ? 'green'
+      : node.status === 'offline'
+      ? 'red'
+      : 'amber';
+
+  return `
+    <div class="popup-inner">
+
+      <div class="popup-name">
+        ${node.name}
+      </div>
+
+      <div class="popup-row">
+        <span class="popup-label">ESTADO</span>
+        <span class="popup-value ${statusClass}">
+          ${statusLabel}
+        </span>
+      </div>
+
+      <div class="popup-row">
+        <span class="popup-label">UBICACIÓN</span>
+        <span class="popup-value">
+          ${node.info}
+        </span>
+      </div>
+
+      <div class="popup-row">
+        <span class="popup-label">LAT</span>
+        <span class="popup-value">
+          ${node.lat.toFixed(4)}
+        </span>
+      </div>
+
+      <div class="popup-row">
+        <span class="popup-label">LNG</span>
+        <span class="popup-value">
+          ${node.lng.toFixed(4)}
+        </span>
+      </div>
+
+    </div>
+  `;
+}
+
+NODES.forEach(node=>{
+
+  const marker = L.marker(
+    [node.lat,node.lng],
+    {
+      icon:createMarkerIcon(node.status)
+    }
+  )
+  .addTo(map)
+  .bindPopup(buildPopup(node),{
+    maxWidth:200,
+    minWidth:180
+  });
+
+  markers[node.id] = marker;
+});
+
+// ═══════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════
+function buildSidebar(){
+
+  const list = document.getElementById('nodeList');
+
+  list.innerHTML = '';
+
+  NODES.forEach(node=>{
+
+    const item = document.createElement('div');
+
+    item.className = 'node-item';
+    item.id = 'node-item-' + node.id;
+
+    item.innerHTML = `
+      <div class="node-dot-wrap">
+        <div class="node-dot ${node.status}"></div>
+      </div>
+
+      <div class="node-info">
+
+        <div class="node-name">
+          ${node.name}
+        </div>
+
+        <div class="node-coords">
+          ${node.lat.toFixed(3)},
+          ${node.lng.toFixed(3)}
+        </div>
+
+      </div>
+
+      <span class="node-status ${node.status}">
+        ${
+          node.status === 'online'
+            ? 'ON'
+            : node.status === 'offline'
+            ? 'OFF'
+            : 'ALT'
+        }
+      </span>
+    `;
+
+    item.addEventListener('click',()=>{
+
+      document
+        .querySelectorAll('.node-item')
+        .forEach(el=>el.classList.remove('active'));
+
+      item.classList.add('active');
+
+      map.setView(
+        [node.lat,node.lng],
+        8,
+        {
+          animate:true
+        }
+      );
+
+      markers[node.id].openPopup();
+    });
+
+    list.appendChild(item);
+  });
+}
+
+// ═══════════════════════════════
+// ESTADÍSTICAS
+// ═══════════════════════════════
+function updateStats(){
+
+  const online =
+    NODES.filter(n=>n.status === 'online').length;
+
+  const offline =
+    NODES.filter(n=>n.status === 'offline').length;
+
+  const warning =
+    NODES.filter(n=>n.status === 'warning').length;
+
+  const total = NODES.length;
+
+  document.getElementById('activeCount').textContent = online;
+  document.getElementById('totalCount').textContent = total;
+  document.getElementById('sidebarCount').textContent = total;
+
+  document.getElementById('footOnline').textContent = online;
+  document.getElementById('footOffline').textContent = offline;
+  document.getElementById('footWarning').textContent = warning;
+}
+
+// ═══════════════════════════════
+// CLOCK
+// ═══════════════════════════════
+function updateClock(){
+
+  const now = new Date();
+
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+
+  document.getElementById('footTime').textContent =
+    `${h}:${m}:${s}`;
+}
+
+setInterval(updateClock,1000);
+
+// ═══════════════════════════════
+// INIT
+// ═══════════════════════════════
+buildSidebar();
+updateStats();
+updateClock();
+
+</script>
+
+</body>
+</html>
