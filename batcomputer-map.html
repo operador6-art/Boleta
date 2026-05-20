@@ -758,10 +758,11 @@ const map = L.map('map',{
 });
 
 L.tileLayer(
-  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
   {
-    attribution:'© OpenStreetMap',
-    maxZoom:18
+    attribution: '&copy; OpenStreetMap &copy; CARTO',
+    subdomains: 'abcd',
+    maxZoom: 20
   }
 ).addTo(map);
 
