@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Comandos · Eventos</title>
+<title>GPS TopFly · Comandos</title>
 <style>
   /* ================================================
      ESTILO REFERENCIA (Boleta)
@@ -218,30 +218,29 @@
     border-radius: 4px;
   }
 
-  /* ── PROCESO INDIVIDUAL ── */
-  .process-item {
-    background: #0a0a0a;
-    border: 1px solid #1a1a1a;
-    border-radius: 10px;
-    padding: 12px 16px;
-    margin-top: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
+  /* ── BOTÓN EXTERNO (COPIAR) ── */
+  .external-copy-btn {
+    display: inline-block;
+    background: transparent;
+    border: 1px solid #00d4ff;
+    border-radius: 30px;
+    padding: 8px 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #00d4ff;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    cursor: pointer;
+    margin-bottom: 16px;
   }
 
-  .process-code {
-    font-family: 'Segoe UI', monospace;
-    font-size: 0.8rem;
-    color: #80d4ff;
-    word-break: break-all;
-    flex: 1;
-  }
-
-  .process-item:first-of-type {
-    margin-top: 0;
+  .external-copy-btn:hover {
+    background: #00d4ff;
+    color: #000000;
+    box-shadow: 0 0 12px rgba(0,212,255,0.4);
+    transform: translateY(-1px);
   }
 
   hr {
@@ -289,10 +288,6 @@
       padding: 4px 8px;
       font-size: 0.6rem;
     }
-    .process-item {
-      flex-direction: column;
-      align-items: flex-start;
-    }
   }
 </style>
 </head>
@@ -302,149 +297,81 @@
 
 <div class="container">
 
-  <!-- ==================== TABLA PRINCIPAL ==================== -->
+  <!-- ==================== BOTÓN PARA COPIAR EL ENLACE ==================== -->
+  <div style="text-align: right; margin-bottom: 20px;">
+    <button id="copySheetLinkBtn" class="external-copy-btn">
+      📋 Copiar enlace de la hoja TopFly
+    </button>
+  </div>
+
+  <!-- ==================== TABLA COMANDOS ==================== -->
   <div class="section-label">
     <span class="sl-line"></span>
-    <span class="sl-text">Comandos SMS</span>
+    <span class="sl-text">Comandos TopFly</span>
     <span class="sl-line r"></span>
   </div>
 
   <div class="table-wrapper">
     <table>
       <thead>
-        <tr><th>Titulo</th><th>Comando</th><th></th></tr>
+        <tr><th>Enviar</th><th>Comando</th><th></th></tr>
       </thead>
       <tbody>
-        <tr><td>APAGADO</span></td><td class="cmd">RELAY,1#</td><td class="center"><button class="copy-btn" data-cmd="RELAY,1#">COPY</button></td></tr>
-        <tr><td>ENCENDIDO</td><td class="cmd">RELAY,0#</td><td class="center"><button class="copy-btn" data-cmd="RELAY,0#">COPY</button></td></tr>
-        <tr><td>Estado de la unidad</td><td class="cmd">RELAY#</td><td class="center"><button class="copy-btn" data-cmd="RELAY#">COPY</button></td></tr>
-        <tr><td>APN HONDURAS</td><td class="cmd">APN,M2MHN.TIGO.COM#</td><td class="center"><button class="copy-btn" data-cmd="APN,M2MHN.TIGO.COM#">COPY</button></td></tr>
-        <tr><td>Borrar Data</td><td class="cmd">CLEAR#</td><td class="center"><button class="copy-btn" data-cmd="CLEAR#">COPY</button></td></tr>
-        <tr><td>CENTER NUMBER</td><td class="cmd">CENTER,A,5277#</td><td class="center"><button class="copy-btn" data-cmd="CENTER,A,5277#">COPY</button></td></tr>
-        <tr><td>CONSULTA PR</td><td class="cmd">PARAM#</td><td class="center"><button class="copy-btn" data-cmd="PARAM#">COPY</button></td></tr>
-        <tr><td>REPORTE 3s</td><td class="cmd">TIMER,30,18000#</td><td class="center"><button class="copy-btn" data-cmd="TIMER,30,18000#">COPY</button></td></tr>
-        <tr><td>RESET</td><td class="cmd">RESET#</td><td class="center"><button class="copy-btn" data-cmd="RESET#">COPY</button></td></tr>
-        <tr><td>Servidor Principal</td><td class="cmd">SERVER,0,131.0.171.238,5067,0#</td><td class="center"><button class="copy-btn" data-cmd="SERVER,0,131.0.171.238,5067,0#">COPY</button></td></tr>
-        <tr><td>Servidor Secundario</td><td class="cmd">SERVER,0,200.124.157.190,5067,0#</td><td class="center"><button class="copy-btn" data-cmd="SERVER,0,200.124.157.190,5067,0#">COPY</button></td></tr>
-        <tr><td>Migrarlo a cxpsfleet</td><td class="cmd">SERVER,1,us.gpsgsm.org,22361,0#</td><td class="center"><button class="copy-btn" data-cmd="SERVER,1,us.gpsgsm.org,22361,0#">COPY</button></td></tr>
-        <tr><td>Apaga el buzzer interno</td><td class="cmd">buzzer_overspeed</td><td class="center"><button class="copy-btn" data-cmd="buzzer_overspeed">COPY</button></td></tr>
-        <tr><td>Configura la alerta sonora</td><td class="cmd">SPEED,ON,0,90,20#</td><td class="center"><button class="copy-btn" data-cmd="SPEED,ON,0,90,20#">COPY</button></td></tr>
-        <tr><td>Configura la salida fisica</td><td class="cmd">IOMODE1,0#</td><td class="center"><button class="copy-btn" data-cmd="IOMODE1,0#">COPY</button></td></tr>
+        <tr><td class="cmd">BLERELAY,1234,ID RELAY,654321,0#</span></td><td class="center"><button class="copy-btn" data-cmd="BLERELAY,1234,ID RELAY,654321,0#">COPY</button></td></tr>
+        <tr><td class="cmd">BLERELAY,1234,IDRELAY,654321,1#</span></td><td class="center"><button class="copy-btn" data-cmd="BLERELAY,1234,IDRELAY,654321,1#">COPY</button></td></tr>
+        <tr><td class="cmd">CURR_POS,1234#</span></td><td class="center"><button class="copy-btn" data-cmd="CURR_POS,1234#">COPY</button></td></tr>
+        <tr><td class="cmd">GOOGLE,1234#</span></td><td class="center"><button class="copy-btn" data-cmd="GOOGLE,1234#">COPY</button></td></tr>
+        <tr><td class="cmd">REBOOT,1234#</span></td><td class="center"><button class="copy-btn" data-cmd="REBOOT,1234#">COPY</button></td></tr>
+        <tr><td class="cmd">VERSION,1234#</span></td><td class="center"><button class="copy-btn" data-cmd="VERSION,1234#">COPY</button></td></tr>
+        <tr><td class="cmd">STATUS,1234#</span></td><td class="center"><button class="copy-btn" data-cmd="STATUS,1234#">COPY</button></td></tr>
+        <tr><td class="cmd">CONFIG,1234#</span></td><td class="center"><button class="copy-btn" data-cmd="CONFIG,1234#">COPY</button></td></tr>
+        <tr><td class="cmd">CONFIG2,1234#</span></td><td class="center"><button class="copy-btn" data-cmd="CONFIG2,1234#">COPY</button></td></tr>
+        <tr><td class="cmd">APN,1234,APN name,username,password#</span></td><td class="center"><button class="copy-btn" data-cmd="APN,1234,APN name,username,password#">COPY</button></td></tr>
+        <tr><td class="cmd">IP,1234,ip address or domain name,port#</span></td><td class="center"><button class="copy-btn" data-cmd="IP,1234,ip address or domain name,port#">COPY</button></td></tr>
+        <tr><td class="cmd">SIMINFO,1234#</span></td><td class="center"><button class="copy-btn" data-cmd="SIMINFO,1234#">COPY</button></td></tr>
+        <tr><td class="cmd">NWINFO,1234#</span></td><td class="center"><button class="copy-btn" data-cmd="NWINFO,1234#">COPY</button></td></tr>
+        <tr><td class="cmd">REALTIMEFIRST,1234,1#</span></td><td class="center"><button class="copy-btn" data-cmd="REALTIMEFIRST,1234,1#">COPY</button></td></tr>
+        <tr><td class="cmd">FACTORY_CLEAN#</span></td><td class="center"><button class="copy-btn" data-cmd="FACTORY_CLEAN#">COPY</button></td></tr>
       </tbody>
     </table>
   </div>
 
-  <!-- ==================== PROCESOS ==================== -->
+  <!-- ==================== CASO CAMBIO DE TOPFLY ==================== -->
   <div class="section-label">
     <span class="sl-line"></span>
-    <span class="sl-text">Procesos</span>
+    <span class="sl-text">Caso Cambio de TopFly</span>
     <span class="sl-line r"></span>
   </div>
 
   <div class="note-box">
-    <strong>Proceso en caso de no tener el numero central</strong>
-  </div>
-
-  <div class="process-item">
-    <span class="process-code">SOS,A,50378504247,50378502915,50378038536#</span>
-    <button class="copy-btn" data-cmd="SOS,A,50378504247,50378502915,50378038536#">COPY</button>
-  </div>
-  <div class="process-item">
-    <span class="process-code">SERVER,0,200.124.157.190,5067,0#</span>
-    <button class="copy-btn" data-cmd="SERVER,0,200.124.157.190,5067,0#">COPY</button>
-  </div>
-  <div class="process-item">
-    <span class="process-code">CENTER,A,50378504247#</span>
-    <button class="copy-btn" data-cmd="CENTER,A,50378504247#">COPY</button>
-  </div>
-
-  <div class="note-box" style="margin-top: 16px;">
-    <strong>M2M</strong>
-  </div>
-
-  <div class="process-item">
-    <span class="process-code">SOS,A,50378504247,50378502915,5277#</span>
-    <button class="copy-btn" data-cmd="SOS,A,50378504247,50378502915,5277#">COPY</button>
-  </div>
-  <div class="process-item">
-    <span class="process-code">CENTER,A,5277#</span>
-    <button class="copy-btn" data-cmd="CENTER,A,5277#">COPY</button>
-  </div>
-
-  <div class="note-box" style="margin-top: 16px;">
-    <strong>MOVING#</strong>
-  </div>
-
-  <!-- ==================== BUZZER ==================== -->
-  <div class="section-label">
-    <span class="sl-line"></span>
-    <span class="sl-text">Buzzer</span>
-    <span class="sl-line r"></span>
-  </div>
-
-  <div class="note-box">
-    • <code>SPEED,ON,0,90,20#</code> → Activa alerta de velocidad a 90 km/h<br>
-    &nbsp;&nbsp;&nbsp;• <code>0</code> → el buzzer lo maneja por separado<br><br>
-    • <code>IOMODE1,2#</code> → Configura la salida IO en modo 2<br>
-    &nbsp;&nbsp;&nbsp;• Controla cómo reacciona la salida física<br><br>
-    • <code>buzzer_overspeed,ON,1,10#</code> → Activa buzzer por exceso de velocidad<br>
-    &nbsp;&nbsp;&nbsp;• <code>1</code> → cantidad de veces que suena<br>
-    &nbsp;&nbsp;&nbsp;• <code>10</code> → duración en segundos<br><br>
-    • <code>buzzer_overtime,OFF#</code> → Desactiva alerta sonora por tiempo excesivo de conducción
+    <strong>Caso CAMBIO DE TOPFLY MISMO MODULO</strong><br><br>
+    Usar para el emparejamiento, de donde se cambia el OBD o el modulo se mantiene, en el excel de topfly, pestaña <strong>CMD</strong>, <code>BLEIDA,1234,CE5EEE2B0E2A,3,#</code>, con el nuevo numero SIM pero el IDRelay antiguo.
   </div>
 
   <!-- ==================== TABLA EVENTOS ==================== -->
+  <!-- CORREGIDO: AHORA SÍ ESTÁ EL TÍTULO -->
   <div class="section-label">
     <span class="sl-line"></span>
-    <span class="sl-text">Eventos</span>
+    <span class="sl-text">Eventos TopFly</span>
     <span class="sl-line r"></span>
   </div>
 
   <div class="table-wrapper">
     <table>
-      <thead><tr><th>Titulo</th><th>Evento</th><th></th></tr></thead>
+      <thead>
+        <tr><th>Titulo</th><th>Evento</th><th></th></tr>
+      </thead>
       <tbody>
-        <tr><td>Choque</td><td class="cmd">03</td><td class="center"><button class="copy-btn" data-cmd="03">COPY</button></td></tr>
-        <tr><td>Desconexión de Poder</td><td class="cmd">02</td><td class="center"><button class="copy-btn" data-cmd="02">COPY</button></td></tr>
-        <tr><td>En movimiento</td><td class="cmd">00</td><td class="center"><button class="copy-btn" data-cmd="00">COPY</button></td></tr>
-        <tr><td>Entrada de Jamming</td><td class="cmd">07</td><td class="center"><button class="copy-btn" data-cmd="07">COPY</button></td></tr>
-        <tr><td>Salida de Jamming</td><td class="cmd">08</td><td class="center"><button class="copy-btn" data-cmd="08">COPY</button></td></tr>
-        <tr><td>IGNICION_OFF</td><td class="cmd">05</td><td class="center"><button class="copy-btn" data-cmd="05">COPY</button></td></tr>
-        <tr><td>IGNICION_ON</td><td class="cmd">04</td><td class="center"><button class="copy-btn" data-cmd="04">COPY</button></td></tr>
-        <tr><td>PANICO</td><td class="cmd">01</td><td class="center"><button class="copy-btn" data-cmd="01">COPY</button></td></tr>
+        <tr><td class="cmd">35</span></td><td class="center"><button class="copy-btn" data-cmd="35">COPY</button></td></tr>
+        <tr><td class="cmd">1</span></td><td class="center"><button class="copy-btn" data-cmd="1">COPY</button></td></tr>
+        <tr><td class="cmd">33</span></td><td class="center"><button class="copy-btn" data-cmd="33">COPY</button></td></tr>
+        <tr><td class="cmd">34</span></td><td class="center"><button class="copy-btn" data-cmd="34">COPY</button></td></tr>
+        <tr><td class="cmd">22</span></td><td class="center"><button class="copy-btn" data-cmd="22">COPY</button></td></tr>
+        <tr><td class="cmd">21</span></td><td class="center"><button class="copy-btn" data-cmd="21">COPY</button></td></tr>
+        <tr><td class="cmd">3</span></td><td class="center"><button class="copy-btn" data-cmd="3">COPY</button></td></tr>
+        <tr><td class="cmd">7</span></td><td class="center"><button class="copy-btn" data-cmd="7">COPY</button></td></tr>
       </tbody>
     </table>
-  </div>
-
-  <!-- ==================== CXPSFLEET ==================== -->
-  <div class="section-label">
-    <span class="sl-line"></span>
-    <span class="sl-text">CXPSFleet</span>
-    <span class="sl-line r"></span>
-  </div>
-
-  <div class="note-box">
-    <strong>GT06E</strong><br>
-    • Desconexión de Batería → <code>alarm_status=2</code><br>
-    • Pánico → <code>alarm_status=1</code><br><br>
-
-    <strong>HVT001</strong><br>
-    • Desconexión de Batería → <code>alarm_status=2</code><br>
-    • Pánico → <code>alarm_status=1</code><br><br>
-
-    <strong>JM-VL03</strong><br>
-    • Desconexión de Batería → <code>alarm_status=2</code><br>
-    • Pánico → <code>alarm_status=1</code><br><br>
-
-    <strong>VL103</strong><br>
-    • Desconexión de Batería → <code>alarm=2 voltaje=0</code><br>
-    • Pánico → <code>alarm=1</code><br><br>
-
-    <strong>WanWay GS900</strong><br>
-    • Desconexión de Batería → <code>alarm=2</code><br>
-    • Pánico → <code>alarm=1</code><br><br>
-
-    <mark>Wanway Tech-GS900 <strong>No tienen pánico</strong></mark>
   </div>
 
 </div>
@@ -478,7 +405,7 @@
   }
   drawScan();
 
-  // Copy buttons
+  // --- Función para copiar texto al portapapeles (para los botones COPY) ---
   let lastBtn = null;
   document.querySelectorAll('.copy-btn[data-cmd]').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -497,6 +424,40 @@
       }).catch(() => alert('No se pudo copiar'));
     });
   });
+
+  // --- Botón específico para copiar el enlace de Google Sheets ---
+  const copyLinkBtn = document.getElementById('copySheetLinkBtn');
+  if (copyLinkBtn) {
+    copyLinkBtn.addEventListener('click', function() {
+      const linkToCopy = 'https://docs.google.com/spreadsheets/d/1_rZTwx-tFVv-fm5l_H927ddI_WWlAzE_D7yDUN4Ts3A/edit?gid=307465185';
+      navigator.clipboard.writeText(linkToCopy).then(() => {
+        const originalText = copyLinkBtn.textContent;
+        const originalBorderColor = copyLinkBtn.style.borderColor;
+        const originalColor = copyLinkBtn.style.color;
+        
+        copyLinkBtn.textContent = '✓ ENLACE COPIADO';
+        copyLinkBtn.style.borderColor = '#4ade80';
+        copyLinkBtn.style.color = '#4ade80';
+        
+        const toast = document.getElementById('toast');
+        toast.textContent = '✓ ENLACE COPIADO';
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+          copyLinkBtn.textContent = originalText;
+          copyLinkBtn.style.borderColor = originalBorderColor || '#00d4ff';
+          copyLinkBtn.style.color = originalColor || '#00d4ff';
+          toast.classList.remove('show');
+          setTimeout(() => {
+            toast.textContent = '✓ COPIADO';
+          }, 500);
+        }, 2000);
+      }).catch(err => {
+        console.error('Error al copiar: ', err);
+        alert('No se pudo copiar el enlace. Revisa los permisos del navegador.');
+      });
+    });
+  }
 </script>
 </body>
 </html>
