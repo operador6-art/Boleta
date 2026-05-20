@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teltonika · Command Reference</title>
+<style>
+  /* ================================================
+     TELTONIKA COMMANDS - Estilo Boletas
+     Negro brillante / Celeste neón / Blanco
+     ================================================ */
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+    background: #000000;
+    padding: 2rem;
+    min-height: 100vh;
+  }
+
+  /* Contenedor principal */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+  }
+
+  .page-header .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #00d4ff;
+    box-shadow: 0 0 10px #00d4ff;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .page-header h1 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff, #00d4ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* Secciones */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+
+  .section-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #00d4ff;
+    margin-bottom: 0.75rem;
+    padding-left: 0.75rem;
+    border-left: 3px solid #00d4ff;
+  }
+
+  /* Tablas */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #0a0a0a;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #1a1a1a;
+  }
+
+  thead tr {
+    background: #0d0d0d;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  thead th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #00d4ff;
+  }
+
+  thead th:last-child {
+    text-align: center;
+    width: 80px;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #1a1a1a;
+    transition: all 0.15s;
+  }
+
+  tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  tbody tr:hover {
+    background: #0d0d0d;
+  }
+
+  tbody tr.separator {
+    background: rgba(0, 212, 255, 0.05);
+    border-top: 1px solid rgba(0, 212, 255, 0.3);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+  }
+
+  tbody tr.separator td {
+    padding: 0.4rem 1rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #00d4ff;
+    font-weight: 600;
+  }
+
+  td {
+    padding: 0.7rem 1rem;
+    font-size: 0.8rem;
+    color: #e0e0e0;
+    vertical-align: middle;
+  }
+
+  td.cmd {
+    font-family: 'Courier New', 'SF Mono', monospace;
+    font-size: 0.75rem;
+    color: #80c0ff;
+  }
+
+  td.center {
+    text-align: center;
+  }
+
+  /* Botones COPY */
+  .copy-btn {
+    background: transparent;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    color: #888;
+    cursor: pointer;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.65rem;
+    font-family: monospace;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .copy-btn:hover {
+    border-color: #00d4ff;
+    color: #00d4ff;
+    background: rgba(0, 212, 255, 0.1);
+  }
+
+  .copy-btn.copied {
+    border-color: #00d4ff;
+    color: #00d4ff;
+    background: rgba(0, 212, 255, 0.15);
+  }
+
+  /* Notas */
+  .note-box {
+    background: #0a0a0a;
+    border: 1px solid #1a1a1a;
+    border-left: 3px solid #00d4ff;
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: #aaa;
+    line-height: 1.6;
+  }
+
+  .note-box code {
+    font-family: 'Courier New', monospace;
+    font-size: 0.7rem;
+    color: #00d4ff;
+    background: rgba(0, 212, 255, 0.08);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+  }
+
+  .note-box mark {
+    background: rgba(0, 212, 255, 0.15);
+    color: #00d4ff;
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+  }
+
+  /* IO Block */
+  .io-block {
+    background: #0a0a0a;
+    border: 1px solid #1a1a1a;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .io-row {
+    display: grid;
+    grid-template-columns: 11rem 1fr auto;
+    align-items: center;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid #1a1a1a;
+    gap: 1rem;
+    transition: background 0.15s;
+  }
+
+  .io-row:last-child {
+    border-bottom: none;
+  }
+
+  .io-row:hover {
+    background: #0d0d0d;
+  }
+
+  .io-key {
+    font-family: 'Courier New', monospace;
+    font-size: 0.7rem;
+    color: #80c0ff;
+  }
+
+  .io-desc {
+    font-size: 0.75rem;
+    color: #aaa;
+  }
+
+  .io-desc mark {
+    background: rgba(0, 212, 255, 0.15);
+    color: #00d4ff;
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+  }
+
+  /* Device Cards */
+  .device-card {
+    background: #0a0a0a;
+    border: 1px solid #1a1a1a;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .device-card h3 {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #00d4ff;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+  }
+
+  .device-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .device-row {
+    display: grid;
+    grid-template-columns: 9rem 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: 6px;
+    transition: background 0.15s;
+  }
+
+  .device-row:hover {
+    background: #0d0d0d;
+  }
+
+  .device-label {
+    font-size: 0.75rem;
+    color: #aaa;
+  }
+
+  .device-val {
+    font-family: 'Courier New', monospace;
+    font-size: 0.7rem;
+    color: #80c0ff;
+  }
+
+  /* Raw Block */
+  .raw-block {
+    background: #0a0a0a;
+    border: 1px solid #1a1a1a;
+    border-radius: 12px;
+    padding: 1rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.7rem;
+    color: #80c0ff;
+    line-height: 1.8;
+    word-break: break-all;
+  }
+
+  .raw-block strong {
+    color: #00d4ff;
+    font-weight: 600;
+  }
+
+  .raw-block-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .raw-block-title {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #888;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  /* Toast */
+  #toast {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: #00d4ff;
+    color: #000000;
+    font-family: monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.2s;
+    pointer-events: none;
+    letter-spacing: 0.05em;
+  }
+
+  #toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    body { padding: 1rem; }
+    .io-row { grid-template-columns: 1fr; gap: 0.5rem; }
+    .device-row { grid-template-columns: 1fr; gap: 0.5rem; }
+    td.cmd { font-size: 0.65rem; word-break: break-all; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="page-header">
+    <div class="dot"></div>
+    <h1>TELTONIKA · COMMAND REFERENCE</h1>
+  </div>
+
+  <!-- COMANDOS SMS -->
+  <div class="section">
+    <div class="section-title">Comandos SMS</div>
+    <table>
+      <thead>
+        <tr><th>Título</th><th>Comando</th><th></th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Apagado de motor</td><td class="cmd">5277 1234 setdigout 1</td><td class="center"><button class="copy-btn" data-cmd="5277 1234 setdigout 1">COPY</button></td></tr>
+        <tr><td>Encendido de Motor</td><td class="cmd">5277 1234 setdigout 0</td><td class="center"><button class="copy-btn" data-cmd="5277 1234 setdigout 0">COPY</button></td></tr>
+        <tr><td>Datos GPS actuales, fecha y hora</td><td class="cmd">5277 1234 getgps</td><td class="center"><button class="copy-btn" data-cmd="5277 1234 getgps">COPY</button></td></tr>
+        <tr><td>Información del servidor</td><td class="cmd">5277 1234 getver</td><td class="center"><button class="copy-btn" data-cmd="5277 1234 getver">COPY</button></td></tr>
+        <tr><td>Información del sistema</td><td class="cmd">5277 1234 getinfo</td><td class="center"><button class="copy-btn" data-cmd="5277 1234 getinfo">COPY</button></td></tr>
+        <tr><td>Información sobre el estado del módem</td><td class="cmd">5277 1234 getstatus</td><td class="center"><button class="copy-btn" data-cmd="5277 1234 getstatus">COPY</button></td></tr>
+        <tr><td>Obtener Registro</td><td class="cmd">5277 1234 getrecord</td><td class="center"><button class="copy-btn" data-cmd="5277 1234 getrecord">COPY</button></td></tr>
+        <tr><td>Registros en memoria</td><td class="cmd">5277 1234 countrecs</td><td class="center"><button class="copy-btn" data-cmd="5277 1234 countrecs">COPY</button></td></tr>
+        <tr><td>Reinicia el dispositivo</td><td class="cmd">5277 1234 cpureset</td><td class="center"><button class="copy-btn" data-cmd="5277 1234 cpureset">COPY</button></td></tr>
+        <tr><td>Responde con IMEI / ICCID (SIM)</td><td class="cmd">5277 1234 getimeiccid</td><td class="center"><button class="copy-btn" data-cmd="5277 1234 getimeiccid">COPY</button></td></tr>
+        <tr><td>Ubicación con enlace a Google Maps</td><td class="cmd">5277 1234 ggps</td><td class="center"><button class="copy-btn" data-cmd="5277 1234 ggps">COPY</button></td></tr>
+
+        <tr class="separator"><td colspan="3">▸ Servidores</td></tr>
+
+        <tr><td>SERVER PRINCIPAL TELTONIKA</td><td class="cmd">5277 1234 setparam 2004:200.124.157.190 2005:5070</td><td class="center"><button class="copy-btn" data-cmd="5277 1234 setparam 2004:200.124.157.190 2005:5070">COPY</button></td></tr>
+        <tr><td>SERVER MIRROR TELTONIKA</td><td class="cmd">5277 1234 setparam 2004:131.0.171.238 2005:5070</td><td class="center"><button class="copy-btn" data-cmd="5277 1234 setparam 2004:131.0.171.238 2005:5070">COPY</button></td></tr>
+        <tr><td>Flush Principal</td><td class="cmd">5277 1234 flush 357073290069315,#,#,#,200.124.157.190,5070 0</td><td class="center"><button class="copy-btn" data-cmd="5277 1234 flush 357073290069315,#,#,#,200.124.157.190,5070 0">COPY</button></td></tr>
+        <tr><td>Flush Mirror</td><td class="cmd">5277 1234 flush 865413051760816,#,#,#,131.0.171.238,5070 0</td><td class="center"><button class="copy-btn" data-cmd="5277 1234 flush 865413051760816,#,#,#,131.0.171.238,5070 0">COPY</button></td></tr>
+
+        <tr class="separator"><td colspan="3">▸ Migración a CXPSFleet</td></tr>
+
+        <tr><td>Migrarlo a CXPSFleet (Cambia el servidor)</td><td class="cmd">5277 1234 setparam 2004:us.gpsgsm.org;2005:22334</td><td class="center"><button class="copy-btn" data-cmd="5277 1234 setparam 2004:us.gpsgsm.org;2005:22334">COPY</button></td></tr>
+        <tr><td>(Obliga a enviar los datos al servidor)</td><td class="cmd">5277 1234 flush 865413051747326,#,#,#,us.gpsgsm.org,22334 0</td><td class="center"><button class="copy-btn" data-cmd="5277 1234 flush 865413051747326,#,#,#,us.gpsgsm.org,22334 0">COPY</button></td></tr>
+      </tbody>
+    </table>
+
+    <div class="note-box">
+      ⚠️ En caso de respuesta de SIM pero no de plataforma, enviar <code>flush</code> + <code>getrecord</code> instantáneamente.<br><br>
+      En caso de migrar en <mark>FOTA</mark>: <code>5277 1234 web_connect</code> → <code>5277 1234 alldeleterecords</code> → reset
+    </div>
+  </div>
+
+  <!-- EVENTOS COMPASSXPS -->
+  <div class="section">
+    <div class="section-title">CompassXPS · Eventos</div>
+    <table>
+      <thead><tr><th>Evento</th><th style="text-align:center">ID</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>Colisión</td><td class="cmd" style="text-align:center">2471</td><td class="center"><button class="copy-btn" data-cmd="2471">COPY</button></td></tr>
+        <tr><td>Conexión de poder</td><td class="cmd" style="text-align:center">2520</td><td class="center"><button class="copy-btn" data-cmd="2520">COPY</button></td></tr>
+        <tr><td>Desconexión de poder</td><td class="cmd" style="text-align:center">2521</td><td class="center"><button class="copy-btn" data-cmd="2521">COPY</button></td></tr>
+        <tr><td>Entrada de Jamming</td><td class="cmd" style="text-align:center">2491</td><td class="center"><button class="copy-btn" data-cmd="2491">COPY</button></td></tr>
+        <tr><td>Salida de Jamming</td><td class="cmd" style="text-align:center">2490</td><td class="center"><button class="copy-btn" data-cmd="2490">COPY</button></td></tr>
+        <tr><td>IGNICION_OFF</td><td class="cmd" style="text-align:center">2390</td><td class="center"><button class="copy-btn" data-cmd="2390">COPY</button></td></tr>
+        <tr><td>IGNICION_ON</td><td class="cmd" style="text-align:center">2391</td><td class="center"><button class="copy-btn" data-cmd="2391">COPY</button></td></tr>
+        <tr><td>Movimiento</td><td class="cmd" style="text-align:center">2401</td><td class="center"><button class="copy-btn" data-cmd="2401">COPY</button></td></tr>
+        <tr><td>Pánico 1</td><td class="cmd" style="text-align:center">0011</td><td class="center"><button class="copy-btn" data-cmd="0011">COPY</button></td></tr>
+        <tr><td>Pánico 2</td><td class="cmd" style="text-align:center">0020</td><td class="center"><button class="copy-btn" data-cmd="0020">COPY</button></td></tr>
+        <tr><td>Pánico FMC920</td><td class="cmd" style="text-align:center">0091</td><td class="center"><button class="copy-btn" data-cmd="0091">COPY</button></td></tr>
+        <tr><td>Pánico FMC130</td><td class="cmd" style="text-align:center">0021</td><td class="center"><button class="copy-btn" data-cmd="0021">COPY</button></td></tr>
+        <tr><td>Remolque</td><td class="cmd" style="text-align:center">2461</td><td class="center"><button class="copy-btn" data-cmd="2461">COPY</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- IO IDs -->
+  <div class="section">
+    <div class="section-title">IO IDs · Parámetros de telemetría</div>
+    <div class="io-block">
+      <div class="io-row"><span class="io-key">ioID:239 → valor:0/1</span><span class="io-desc">IGNICIÓN (1 on, 0 off)</span><button class="copy-btn" data-cmd='{"ioID":239,"valor":0}'>COPY</button></div>
+      <div class="io-row"><span class="io-key">ioID:240 → valor:1</span><span class="io-desc">MOVIMIENTO</span><button class="copy-btn" data-cmd='{"ioID":240,"valor":1}'>COPY</button></div>
+      <div class="io-row"><span class="io-key">ioID:21 → valor:1-5</span><span class="io-desc">SEÑAL GSM (rango 1–5)</span><button class="copy-btn" data-cmd='{"ioID":21,"valor":5}'>COPY</button></div>
+      <div class="io-row"><span class="io-key">ioID:69 → valor:0-3</span><span class="io-desc">ESTADO GNSS (0 off · 1 ON cuadrado · 2 ON descuadrado · 3 reposo)</span><button class="copy-btn" data-cmd='{"ioID":69,"valor":1}'>COPY</button></div>
+      <div class="io-row"><span class="io-key">ioID:113</span><span class="io-desc">NIVEL DE BATERÍA</span><button class="copy-btn" data-cmd='{"ioID":113,"valor":0}'>COPY</button></div>
+      <div class="io-row"><span class="io-key">ioID:66</span><span class="io-desc">VOLTAJE EXTERNO (ej. 13.685 V)</span><button class="copy-btn" data-cmd='{"ioID":66,"valor":13.685}'>COPY</button></div>
+      <div class="io-row"><span class="io-key">ioID:24</span><span class="io-desc">VELOCIDAD</span><button class="copy-btn" data-cmd='{"ioID":24,"valor":0}'>COPY</button></div>
+      <div class="io-row"><span class="io-key">ioID:67</span><span class="io-desc">VOLTAJE BATERÍA</span><button class="copy-btn" data-cmd='{"ioID":67,"valor":0.0}'>COPY</button></div>
+      <div class="io-row"><span class="io-key">ioID:9</span><span class="io-desc">SALIDA ANALOGA — <mark>PÁNICO</mark></span><button class="copy-btn" data-cmd='{"ioID":9,"valor":0.174}'>COPY</button></div>
+      <div class="io-row"><span class="io-key">ioID:241</span><span class="io-desc">CÓDIGO DE OPERADOR GSM</span><button class="copy-btn" data-cmd='{"ioID":241,"valor":70603}'>COPY</button></div>
+      <div class="io-row"><span class="io-key">ioID:16</span><span class="io-desc">ODÓMETRO</span><button class="copy-btn" data-cmd='{"ioID":16,"valor":42260978}'>COPY</button></div>
+    </div>
+  </div>
+
+  <!-- DISPOSITIVOS -->
+  <div class="section">
+    <div class="section-title">Parámetros por modelo</div>
+
+    <div class="device-card" style="margin-bottom:0.75rem">
+      <h3>FMC130</h3>
+      <div class="device-rows">
+        <div class="device-row"><span class="device-label">Pánico</span><span class="device-val">event_io_id=2</span><button class="copy-btn" data-cmd="event_io_id=2">COPY</button></div>
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>FMC920</h3>
+      <div class="device-rows">
+        <div class="device-row"><span class="device-label">Conexión</span><span class="device-val">io_252=0</span><button class="copy-btn" data-cmd="io_252=0">COPY</button></div>
+        <div class="device-row"><span class="device-label">Desconexión</span><span class="device-val">io_252=1</span><button class="copy-btn" data-cmd="io_252=1">COPY</button></div>
+        <div class="device-row"><span class="device-label">Pánico</span><span class="device-val">event_io_id=9</span><button class="copy-btn" data-cmd="event_io_id=9">COPY</button></div>
+        <div class="device-row"><span class="device-label">Encendido</span><span class="device-val">io_239=0</span><button class="copy-btn" data-cmd="io_239=0">COPY</button></div>
+        <div class="device-row"><span class="device-label">Apagado</span><span class="device-val">io_239=1</span><button class="copy-btn" data-cmd="io_239=1">COPY</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CXPSFleet -->
+  <div class="section">
+    <div class="section-title">CXPSFleet · Desconexión (raw payload)</div>
+    <div class="raw-block">
+      <div class="raw-block-header">
+        <span class="raw-block-title">Ejemplo de trama</span>
+        <button class="copy-btn" data-cmd="prior=0, event_io_id=252, total_io=15, io_239=0, io_240=1, gsm=5, io_21=5, io_200=0, io_69=1, io_113=100, io_252=1, pdop=0.9, io_181=9, hdop=0.5, io_182=5, pwr_ext=10.852, io_66=10852, pwr_int=3.985, io_67=3985, io_68=0, io_9=0, mcc=712, mnc=3, io_241=71203, io_16=76671914">COPY</button>
+      </div>
+      prior=0, <strong>event_io_id=252</strong>, total_io=15, io_239=0, io_240=1, gsm=5, io_21=5, io_200=0, io_69=1, io_113=100, <strong>io_252=1</strong>, pdop=0.9, io_181=9, hdop=0.5, io_182=5, pwr_ext=10.852, io_66=10852, pwr_int=3.985, io_67=3985, io_68=0, io_9=0, mcc=712, mnc=3, io_241=71203, io_16=76671914
+    </div>
+  </div>
+</div>
+
+<div id="toast">✓ COPIADO</div>
+
+<script>
+  let lastBtn = null;
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.copy-btn[data-cmd]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const decoded = btn.dataset.cmd.replace(/&quot;/g, '"').replace(/&amp;/g, '&');
+
+        navigator.clipboard.writeText(decoded).then(function() {
+          if (lastBtn && lastBtn !== btn) {
+            lastBtn.textContent = 'COPY';
+            lastBtn.classList.remove('copied');
+          }
+          btn.textContent = '✓ OK';
+          btn.classList.add('copied');
+          lastBtn = btn;
+
+          const toast = document.getElementById('toast');
+          toast.classList.add('show');
+          setTimeout(function() { toast.classList.remove('show'); }, 1800);
+        }).catch(function(err) {
+          alert('No se pudo copiar: ' + err);
+        });
+      });
+    });
+  });
+</script>
+</body>
+</html>
