@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Comandos · Eventos</title>
+<style>
+  /* ================================================
+     ESTILO REFERENCIA (Boleta)
+     Fuente: Segoe UI
+     Paleta: Negro / Celeste / Blanco
+     ================================================ */
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    background: #000000;
+    padding: 24px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* Grid de fondo */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+  }
+
+  /* Glow central */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(0,100,180,0.1) 0%, transparent 70%);
+    pointer-events: none;
+    animation: centerPulse 5s ease-in-out infinite;
+  }
+
+  @keyframes centerPulse {
+    0%,100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  /* Scanline */
+  canvas#scan {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.3;
+  }
+
+  .container {
+    position: relative;
+    z-index: 10;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 0 16px 0;
+  }
+  .section-label:first-of-type {
+    margin-top: 0;
+  }
+
+  .sl-line {
+    height: 1px;
+    flex: 1;
+    background: linear-gradient(90deg, rgba(0,212,255,0.4), transparent);
+  }
+  .sl-line.r {
+    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.4));
+  }
+
+  .sl-text {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: #2a7090;
+    text-transform: uppercase;
+  }
+
+  /* ── TABLAS ── */
+  .table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 16px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #0a0a0a;
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  thead th {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: #00d4ff;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+    background: #0d0d0d;
+    border-bottom: 1px solid rgba(0,212,255,0.3);
+  }
+
+  thead th:last-child {
+    text-align: center;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(0,212,255,0.08);
+    transition: background 0.2s;
+  }
+
+  tbody tr:hover {
+    background: rgba(0,212,255,0.04);
+  }
+
+  td {
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    color: #ffffff;
+    vertical-align: middle;
+  }
+
+  td.cmd {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    font-size: 0.8rem;
+    color: #80d4ff;
+    word-break: break-all;
+  }
+
+  td.center {
+    text-align: center;
+  }
+
+  /* ── BOTONES COPY ── */
+  .copy-btn {
+    background: transparent;
+    border: 1px solid #333;
+    border-radius: 6px;
+    color: #aaa;
+    cursor: pointer;
+    padding: 5px 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover {
+    border-color: #00d4ff;
+    color: #00d4ff;
+    background: rgba(0,212,255,0.1);
+    box-shadow: 0 0 8px rgba(0,212,255,0.2);
+  }
+
+  .copy-btn.copied {
+    border-color: #00d4ff;
+    color: #00d4ff;
+    background: rgba(0,212,255,0.15);
+  }
+
+  /* ── NOTAS ── */
+  .note-box {
+    background: #0a0a0a;
+    border: 1px solid #1a1a1a;
+    border-left: 3px solid #00d4ff;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 16px;
+    font-size: 0.75rem;
+    color: #ffffff;
+    line-height: 1.5;
+  }
+
+  .note-box code {
+    font-family: 'Segoe UI', monospace;
+    font-size: 0.7rem;
+    color: #00d4ff;
+    background: rgba(0,212,255,0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .note-box mark {
+    background: rgba(0,212,255,0.15);
+    color: #00d4ff;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* ── PROCESO INDIVIDUAL ── */
+  .process-item {
+    background: #0a0a0a;
+    border: 1px solid #1a1a1a;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .process-code {
+    font-family: 'Segoe UI', monospace;
+    font-size: 0.8rem;
+    color: #80d4ff;
+    word-break: break-all;
+    flex: 1;
+  }
+
+  .process-item:first-of-type {
+    margin-top: 0;
+  }
+
+  hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.4), transparent);
+    margin: 24px 0;
+  }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #00d4ff;
+    color: #000000;
+    font-family: monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.2s;
+    pointer-events: none;
+    letter-spacing: 0.05em;
+    z-index: 100;
+  }
+
+  #toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    body {
+      padding: 16px;
+    }
+    td.cmd {
+      font-size: 0.7rem;
+      word-break: break-all;
+    }
+    .copy-btn {
+      padding: 4px 8px;
+      font-size: 0.6rem;
+    }
+    .process-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="scan"></canvas>
+
+<div class="container">
+
+  <!-- ==================== TABLA PRINCIPAL ==================== -->
+  <div class="section-label">
+    <span class="sl-line"></span>
+    <span class="sl-text">Comandos SMS</span>
+    <span class="sl-line r"></span>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>Titulo</th><th>Comando</th><th></th></tr>
+      </thead>
+      <tbody>
+        <tr><td>APAGADO</span></td><td class="cmd">RELAY,1#</td><td class="center"><button class="copy-btn" data-cmd="RELAY,1#">COPY</button></td></tr>
+        <tr><td>ENCENDIDO</td><td class="cmd">RELAY,0#</td><td class="center"><button class="copy-btn" data-cmd="RELAY,0#">COPY</button></td></tr>
+        <tr><td>Estado de la unidad</td><td class="cmd">RELAY#</td><td class="center"><button class="copy-btn" data-cmd="RELAY#">COPY</button></td></tr>
+        <tr><td>APN HONDURAS</td><td class="cmd">APN,M2MHN.TIGO.COM#</td><td class="center"><button class="copy-btn" data-cmd="APN,M2MHN.TIGO.COM#">COPY</button></td></tr>
+        <tr><td>Borrar Data</td><td class="cmd">CLEAR#</td><td class="center"><button class="copy-btn" data-cmd="CLEAR#">COPY</button></td></tr>
+        <tr><td>CENTER NUMBER</td><td class="cmd">CENTER,A,5277#</td><td class="center"><button class="copy-btn" data-cmd="CENTER,A,5277#">COPY</button></td></tr>
+        <tr><td>CONSULTA PR</td><td class="cmd">PARAM#</td><td class="center"><button class="copy-btn" data-cmd="PARAM#">COPY</button></td></tr>
+        <tr><td>REPORTE 3s</td><td class="cmd">TIMER,30,18000#</td><td class="center"><button class="copy-btn" data-cmd="TIMER,30,18000#">COPY</button></td></tr>
+        <tr><td>RESET</td><td class="cmd">RESET#</td><td class="center"><button class="copy-btn" data-cmd="RESET#">COPY</button></td></tr>
+        <tr><td>Servidor Principal</td><td class="cmd">SERVER,0,131.0.171.238,5067,0#</td><td class="center"><button class="copy-btn" data-cmd="SERVER,0,131.0.171.238,5067,0#">COPY</button></td></tr>
+        <tr><td>Servidor Secundario</td><td class="cmd">SERVER,0,200.124.157.190,5067,0#</td><td class="center"><button class="copy-btn" data-cmd="SERVER,0,200.124.157.190,5067,0#">COPY</button></td></tr>
+        <tr><td>Migrarlo a cxpsfleet</td><td class="cmd">SERVER,1,us.gpsgsm.org,22361,0#</td><td class="center"><button class="copy-btn" data-cmd="SERVER,1,us.gpsgsm.org,22361,0#">COPY</button></td></tr>
+        <tr><td>Apaga el buzzer interno</td><td class="cmd">buzzer_overspeed</td><td class="center"><button class="copy-btn" data-cmd="buzzer_overspeed">COPY</button></td></tr>
+        <tr><td>Configura la alerta sonora</td><td class="cmd">SPEED,ON,0,90,20#</td><td class="center"><button class="copy-btn" data-cmd="SPEED,ON,0,90,20#">COPY</button></td></tr>
+        <tr><td>Configura la salida fisica</td><td class="cmd">IOMODE1,0#</td><td class="center"><button class="copy-btn" data-cmd="IOMODE1,0#">COPY</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ==================== PROCESOS ==================== -->
+  <div class="section-label">
+    <span class="sl-line"></span>
+    <span class="sl-text">Procesos</span>
+    <span class="sl-line r"></span>
+  </div>
+
+  <div class="note-box">
+    <strong>Proceso en caso de no tener el numero central</strong>
+  </div>
+
+  <div class="process-item">
+    <span class="process-code">SOS,A,50378504247,50378502915,50378038536#</span>
+    <button class="copy-btn" data-cmd="SOS,A,50378504247,50378502915,50378038536#">COPY</button>
+  </div>
+  <div class="process-item">
+    <span class="process-code">SERVER,0,200.124.157.190,5067,0#</span>
+    <button class="copy-btn" data-cmd="SERVER,0,200.124.157.190,5067,0#">COPY</button>
+  </div>
+  <div class="process-item">
+    <span class="process-code">CENTER,A,50378504247#</span>
+    <button class="copy-btn" data-cmd="CENTER,A,50378504247#">COPY</button>
+  </div>
+
+  <div class="note-box" style="margin-top: 16px;">
+    <strong>M2M</strong>
+  </div>
+
+  <div class="process-item">
+    <span class="process-code">SOS,A,50378504247,50378502915,5277#</span>
+    <button class="copy-btn" data-cmd="SOS,A,50378504247,50378502915,5277#">COPY</button>
+  </div>
+  <div class="process-item">
+    <span class="process-code">CENTER,A,5277#</span>
+    <button class="copy-btn" data-cmd="CENTER,A,5277#">COPY</button>
+  </div>
+
+  <div class="note-box" style="margin-top: 16px;">
+    <strong>MOVING#</strong>
+  </div>
+
+  <!-- ==================== BUZZER ==================== -->
+  <div class="section-label">
+    <span class="sl-line"></span>
+    <span class="sl-text">Buzzer</span>
+    <span class="sl-line r"></span>
+  </div>
+
+  <div class="note-box">
+    • <code>SPEED,ON,0,90,20#</code> → Activa alerta de velocidad a 90 km/h<br>
+    &nbsp;&nbsp;&nbsp;• <code>0</code> → el buzzer lo maneja por separado<br><br>
+    • <code>IOMODE1,2#</code> → Configura la salida IO en modo 2<br>
+    &nbsp;&nbsp;&nbsp;• Controla cómo reacciona la salida física<br><br>
+    • <code>buzzer_overspeed,ON,1,10#</code> → Activa buzzer por exceso de velocidad<br>
+    &nbsp;&nbsp;&nbsp;• <code>1</code> → cantidad de veces que suena<br>
+    &nbsp;&nbsp;&nbsp;• <code>10</code> → duración en segundos<br><br>
+    • <code>buzzer_overtime,OFF#</code> → Desactiva alerta sonora por tiempo excesivo de conducción
+  </div>
+
+  <!-- ==================== TABLA EVENTOS ==================== -->
+  <div class="section-label">
+    <span class="sl-line"></span>
+    <span class="sl-text">Eventos</span>
+    <span class="sl-line r"></span>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Titulo</th><th>Evento</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>Choque</td><td class="cmd">03</td><td class="center"><button class="copy-btn" data-cmd="03">COPY</button></td></tr>
+        <tr><td>Desconexión de Poder</td><td class="cmd">02</td><td class="center"><button class="copy-btn" data-cmd="02">COPY</button></td></tr>
+        <tr><td>En movimiento</td><td class="cmd">00</td><td class="center"><button class="copy-btn" data-cmd="00">COPY</button></td></tr>
+        <tr><td>Entrada de Jamming</td><td class="cmd">07</td><td class="center"><button class="copy-btn" data-cmd="07">COPY</button></td></tr>
+        <tr><td>Salida de Jamming</td><td class="cmd">08</td><td class="center"><button class="copy-btn" data-cmd="08">COPY</button></td></tr>
+        <tr><td>IGNICION_OFF</td><td class="cmd">05</td><td class="center"><button class="copy-btn" data-cmd="05">COPY</button></td></tr>
+        <tr><td>IGNICION_ON</td><td class="cmd">04</td><td class="center"><button class="copy-btn" data-cmd="04">COPY</button></td></tr>
+        <tr><td>PANICO</td><td class="cmd">01</td><td class="center"><button class="copy-btn" data-cmd="01">COPY</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ==================== CXPSFLEET ==================== -->
+  <div class="section-label">
+    <span class="sl-line"></span>
+    <span class="sl-text">CXPSFleet</span>
+    <span class="sl-line r"></span>
+  </div>
+
+  <div class="note-box">
+    <strong>GT06E</strong><br>
+    • Desconexión de Batería → <code>alarm_status=2</code><br>
+    • Pánico → <code>alarm_status=1</code><br><br>
+
+    <strong>HVT001</strong><br>
+    • Desconexión de Batería → <code>alarm_status=2</code><br>
+    • Pánico → <code>alarm_status=1</code><br><br>
+
+    <strong>JM-VL03</strong><br>
+    • Desconexión de Batería → <code>alarm_status=2</code><br>
+    • Pánico → <code>alarm_status=1</code><br><br>
+
+    <strong>VL103</strong><br>
+    • Desconexión de Batería → <code>alarm=2 voltaje=0</code><br>
+    • Pánico → <code>alarm=1</code><br><br>
+
+    <strong>WanWay GS900</strong><br>
+    • Desconexión de Batería → <code>alarm=2</code><br>
+    • Pánico → <code>alarm=1</code><br><br>
+
+    <mark>Wanway Tech-GS900 <strong>No tienen pánico</strong></mark>
+  </div>
+
+</div>
+
+<div id="toast">✓ COPIADO</div>
+
+<script>
+  // Scanline
+  const canvas = document.getElementById('scan');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  let scanY = 0;
+  function drawScan() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const grad = ctx.createLinearGradient(0, scanY - 60, 0, scanY + 60);
+    grad.addColorStop(0, 'transparent');
+    grad.addColorStop(0.5, 'rgba(0,212,255,0.04)');
+    grad.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, scanY - 60, canvas.width, 120);
+    scanY += 1.2;
+    if (scanY > canvas.height + 60) scanY = -60;
+    requestAnimationFrame(drawScan);
+  }
+  drawScan();
+
+  // Copy buttons
+  let lastBtn = null;
+  document.querySelectorAll('.copy-btn[data-cmd]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const decoded = this.dataset.cmd.replace(/&quot;/g, '"').replace(/&amp;/g, '&');
+      navigator.clipboard.writeText(decoded).then(() => {
+        if (lastBtn && lastBtn !== this) {
+          lastBtn.textContent = 'COPY';
+          lastBtn.classList.remove('copied');
+        }
+        this.textContent = '✓ OK';
+        this.classList.add('copied');
+        lastBtn = this;
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 1800);
+      }).catch(() => alert('No se pudo copiar'));
+    });
+  });
+</script>
+</body>
+</html>
