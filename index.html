@@ -380,20 +380,20 @@
     </div>
   </div>
 
-  <!-- Pánico -->
-  <div class="grid-2">
-    <div class="field">
-      <div class="label">P <span>[PÁNICO]</span></div>
-      <select id="panico">
-        <option>No</option>
-        <option>Si</option>
-      </select>
-    </div>
-    <div id="panicoDondeContainer" class="conditional">
-      <div class="label">P - ¿DÓNDE?</div>
-      <input type="text" id="panicoDonde" placeholder="Ubicación del pánico">
-    </div>
+  <!-- Pánico - versión corregida con alineación -->
+<div class="grid-2">
+  <div class="field">
+    <div class="label">P <span>[PÁNICO]</span></div>
+    <select id="panico">
+      <option>No</option>
+      <option>Si</option>
+    </select>
   </div>
+  <div id="panicoDondeContainer" class="field conditional" style="display: none;">
+    <div class="label">P - ¿DÓNDE?</div>
+    <input type="text" id="panicoDonde" placeholder="Ubicación del pánico">
+  </div>
+</div>
 
   <!-- Apagado -->
   <div class="field">
