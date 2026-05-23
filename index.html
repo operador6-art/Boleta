@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Boletas | Sistema de Gestión</title>
+<title>Boleta | Sistema de Gestión</title>
 <style>
   /* ================================================
      SISTEMA DE BOLETAS - Estilo Propio
@@ -97,12 +97,6 @@
     font-weight: normal;
   }
 
-  /* Contenedor para input con dropdown personalizado */
-  .custom-select {
-    position: relative;
-    width: 100%;
-  }
-
   input, select {
     width: 100%;
     padding: 10px 14px;
@@ -123,45 +117,6 @@
 
   input:hover, select:hover {
     border-color: #333;
-  }
-
-  /* Dropdown personalizado */
-  .dropdown-list {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: #0d0d0d;
-    border: 1px solid #00d4ff;
-    border-radius: 10px;
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 1000;
-    margin-top: 4px;
-    display: none;
-  }
-
-  .dropdown-list.show {
-    display: block;
-  }
-
-  .dropdown-item {
-    padding: 10px 14px;
-    cursor: pointer;
-    color: #e0e0e0;
-    font-size: 0.85rem;
-    font-family: monospace;
-    transition: all 0.15s;
-    border-bottom: 1px solid #1a1a1a;
-  }
-
-  .dropdown-item:last-child {
-    border-bottom: none;
-  }
-
-  .dropdown-item:hover {
-    background: rgba(0, 212, 255, 0.15);
-    color: #00d4ff;
   }
 
   /* Grids */
@@ -333,38 +288,25 @@
     <input type="number" id="numBoleta" placeholder="Ingrese número">
   </div>
 
-  <!-- Técnico y Operador con dropdown personalizado -->
+  <!-- Técnico y Operador -->
   <div class="grid-2">
     <div class="field">
       <div class="label">TEC <span>[TÉCNICO]</span></div>
-      <div class="custom-select">
-        <input type="text" id="tecnico" placeholder="Seleccione o escriba" autocomplete="off">
-        <div id="tecnicoDropdown" class="dropdown-list">
-          <div class="dropdown-item">Alejandro J.</div>
-          <div class="dropdown-item">Edwin O.</div>
-          <div class="dropdown-item">Franklin R.</div>
-          <div class="dropdown-item">Javier J.</div>
-          <div class="dropdown-item">Jorge M.</div>
-          <div class="dropdown-item">Manuel G.</div>
-          <div class="dropdown-item">Samuel S.</div>
-          <div class="dropdown-item">Sebastian A.</div>
-          <div class="dropdown-item">Antonio C.</div>
-          <div class="dropdown-item">Alessandro H.</div>
-        </div>
-      </div>
+      <input list="tecnicos" id="tecnico" placeholder="Seleccione o escriba">
+      <datalist id="tecnicos">
+        <option>Alejandro J.</option><option>Edwin O.</option><option>Franklin R.</option>
+        <option>Javier J.</option><option>Jorge M.</option><option>Manuel G.</option>
+        <option>Samuel S.</option><option>Sebastian A.</option><option>Antonio C.</option>
+        <option>Alessandro H.</option>
+      </datalist>
     </div>
     <div class="field">
       <div class="label">O <span>[OPERADOR]</span></div>
-      <div class="custom-select">
-        <input type="text" id="operador" placeholder="Seleccione o escriba" autocomplete="off">
-        <div id="operadorDropdown" class="dropdown-list">
-          <div class="dropdown-item">Daniel H.</div>
-          <div class="dropdown-item">Hector L.</div>
-          <div class="dropdown-item">Josué R.</div>
-          <div class="dropdown-item">Carlos N.</div>
-          <div class="dropdown-item">Eduardo C.</div>
-        </div>
-      </div>
+      <input list="operadores" id="operador" placeholder="Seleccione o escriba">
+      <datalist id="operadores">
+        <option>Daniel H.</option><option>Hector L.</option><option>Josué R.</option>
+        <option>Carlos N.</option><option>Eduardo C.</option>
+      </datalist>
     </div>
   </div>
 
@@ -380,20 +322,20 @@
     </div>
   </div>
 
-  <!-- Pánico - corregido con columnas fijas -->
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-  <div class="field">
-    <div class="label">P <span>[PÁNICO]</span></div>
-    <select id="panico">
-      <option>No</option>
-      <option>Si</option>
-    </select>
+  <!-- Pánico -->
+  <div class="grid-2">
+    <div class="field">
+      <div class="label">P <span>[PÁNICO]</span></div>
+      <select id="panico">
+        <option>No</option>
+        <option>Si</option>
+      </select>
+    </div>
+    <div id="panicoDondeContainer" class="conditional">
+      <div class="label">P - ¿DÓNDE?</div>
+      <input type="text" id="panicoDonde" placeholder="Ubicación del pánico">
+    </div>
   </div>
-  <div id="panicoDondeContainer" class="field" style="display: none;">
-    <div class="label">P - ¿DÓNDE?</div>
-    <input type="text" id="panicoDonde" placeholder="Ubicación del pánico">
-  </div>
-</div>
 
   <!-- Apagado -->
   <div class="field">
@@ -461,70 +403,6 @@
 </div>
 
 <script>
-  // ========== DROPDOWN PERSONALIZADO PARA TÉCNICO ==========
-  function setupCustomDropdown(inputId, dropdownId, options) {
-    const input = document.getElementById(inputId);
-    const dropdown = document.getElementById(dropdownId);
-    
-    if (!input || !dropdown) return;
-    
-    // Mostrar/ocultar dropdown
-    input.addEventListener('focus', () => {
-      dropdown.classList.add('show');
-    });
-    
-    input.addEventListener('click', () => {
-      dropdown.classList.add('show');
-    });
-    
-    // Cerrar dropdown al hacer click fuera
-    document.addEventListener('click', (e) => {
-      if (!input.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.classList.remove('show');
-      }
-    });
-    
-    // Filtrar opciones mientras escribe
-    input.addEventListener('input', () => {
-      const filter = input.value.toLowerCase();
-      const items = dropdown.querySelectorAll('.dropdown-item');
-      let hasVisible = false;
-      
-      items.forEach(item => {
-        const text = item.textContent.toLowerCase();
-        if (text.includes(filter)) {
-          item.style.display = 'block';
-          hasVisible = true;
-        } else {
-          item.style.display = 'none';
-        }
-      });
-      
-      if (hasVisible && filter !== '') {
-        dropdown.classList.add('show');
-      }
-    });
-    
-    // Seleccionar opción
-    dropdown.querySelectorAll('.dropdown-item').forEach(item => {
-      item.addEventListener('click', () => {
-        input.value = item.textContent;
-        dropdown.classList.remove('show');
-        // Disparar evento change
-        input.dispatchEvent(new Event('change'));
-      });
-    });
-  }
-  
-  // Inicializar dropdowns
-  const tecnicosList = ['Alejandro J.', 'Edwin O.', 'Franklin R.', 'Javier J.', 'Jorge M.', 'Manuel G.', 'Samuel S.', 'Sebastian A.', 'Antonio C.', 'Alessandro H.'];
-  const operadoresList = ['Daniel H.', 'Hector L.', 'Josué R.', 'Carlos N.', 'Eduardo C.'];
-  
-  setupCustomDropdown('tecnico', 'tecnicoDropdown', tecnicosList);
-  setupCustomDropdown('operador', 'operadorDropdown', operadoresList);
-  
-  // ========== RESTO DE LA LÓGICA ORIGINAL ==========
-  
   // Pánico: mostrar/ocultar campo "¿Dónde?"
   const panicoSelect = document.getElementById('panico');
   const panicoDondeContainer = document.getElementById('panicoDondeContainer');
