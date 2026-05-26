@@ -199,7 +199,6 @@
   /* Campos condicionales */
   .conditional {
     display: none;
-    margin-top: 8px;
     animation: fadeIn 0.2s ease;
   }
 
@@ -322,7 +321,7 @@
     </div>
   </div>
 
-  <!-- Pánico -->
+  <!-- Pánico con ¿DÓNDE? a la par -->
   <div class="grid-2">
     <div class="field">
       <div class="label">P <span>[PÁNICO]</span></div>
@@ -331,10 +330,11 @@
         <option>Si</option>
       </select>
     </div>
-    <div id="panicoDondeContainer" class="conditional">
+    <div id="panicoDondeContainer" class="conditional" style="margin-bottom: 0;">
       <div class="label">P - ¿DÓNDE?</div>
       <input type="text" id="panicoDonde" placeholder="Ubicación del pánico">
     </div>
+    <!-- Celda vacía cuando está oculto, se maneja con CSS -->
   </div>
 
   <!-- Apagado -->
@@ -403,15 +403,23 @@
 </div>
 
 <script>
-  // Pánico: mostrar/ocultar campo "¿Dónde?"
+  // Pánico: mostrar/ocultar campo "¿Dónde?" a la par
   const panicoSelect = document.getElementById('panico');
   const panicoDondeContainer = document.getElementById('panicoDondeContainer');
   const panicoDondeInput = document.getElementById('panicoDonde');
 
-  panicoSelect.addEventListener('change', function() {
-    panicoDondeContainer.style.display = this.value === 'Si' ? 'block' : 'none';
-    if (this.value !== 'Si') panicoDondeInput.value = '';
-  });
+  function togglePanicoDonde() {
+    if (panicoSelect.value === 'Si') {
+      panicoDondeContainer.style.display = 'block';
+      panicoDondeContainer.style.marginBottom = '0';
+    } else {
+      panicoDondeContainer.style.display = 'none';
+      panicoDondeInput.value = '';
+    }
+  }
+
+  panicoSelect.addEventListener('change', togglePanicoDonde);
+  togglePanicoDonde(); // Estado inicial
 
   // Topfly: mostrar/ocultar campo IDRelay
   const topflySelect = document.getElementById('topfly');
